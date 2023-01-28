@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+<meta name="author" content="Armando Saavedra" />
+
+
+<title>Breast Cancer Predictive Model</title>
+
+<script src="site_libs/header-attrs-2.20/header-attrs.js"></script>
+<script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/cosmo.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+
+
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark the anchor link active (and if it's in a dropdown, also mark that active)
+  var dropdown = menuAnchor.closest('li.dropdown');
+  if (window.bootstrap) { // Bootstrap 4+
+    menuAnchor.addClass('active');
+    dropdown.find('> .dropdown-toggle').addClass('active');
+  } else { // Bootstrap 3
+    menuAnchor.parent().addClass('active');
+    dropdown.addClass('active');
+  }
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "\e258";
+  font-family: 'Glyphicons Halflings';
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">Portfolio R</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+
+
+<h1 class="title toc-ignore">Breast Cancer Predictive Model</h1>
+<h4 class="author">Armando Saavedra</h4>
+<h4 class="date">3/22/2020</h4>
+
+</div>
+
+
+<style type="text/css">
+.fluid.row.title{
+  font-size: 2.9vw
+}
+h1{
+  font-size:1.9vw;
+  margin-top: 30px!important;
+  margin-bottom: 15px!important;
+  padding-top: 0px!important;
+  padding-bottom: 0px!important;
+  font-weight: bold;
+  border-bottom: solid 1px black;
+}
+
+h2{
+  margin-top: 30px!important;
+  margin-bottom: 15px!important;
+  padding-top: 0px!important;
+  padding-bottom: 0px!important;
+  font-size: 22px;
+  font-weight: bold
+}
+p{
+  display: block;
+  margin-block-start: 1em;
+  margin-block-end: 1em;
+  margin-inline-start: 0px;
+  margin-inline-end: 0px;
+  
+}
+
+</style>
+<style>
+.list-group-item.active, .list-group-item.active:focus, .list-group-item.active:hover {
+    background-color: black;
+}
+</style>
+<div id="introduction" class="section level1">
+<h1>Introduction</h1>
+<p>The goal of this project is to analyze spatial data summarizing the
+number of acidents in New york. The objective is to create a heat map
+where every zip code shows the number of car accidents.</p>
+<p>The information base of this analysis comes from a dataset found in
+Kaggle that provides differents</p>
+</div>
+<div id="data" class="section level1">
+<h1>Data</h1>
+<pre class="r"><code>data&lt;-read.csv(&quot;C:/Users/dsaav/Documents/Projects/Datasets/Breast Cancer Prediction/data.csv&quot;,header = TRUE)
+sum(is.na(data$ZIP.CODE))</code></pre>
+</div>
+<div id="main-statistics" class="section level1">
+<h1>Main Statistics</h1>
+<pre class="r"><code>summary(data)</code></pre>
+<pre><code>##    diagnosis       radius_mean      texture_mean   perimeter_mean  
+##  Min.   :0.0000   Min.   : 6.981   Min.   : 9.71   Min.   : 43.79  
+##  1st Qu.:0.0000   1st Qu.:11.700   1st Qu.:16.17   1st Qu.: 75.17  
+##  Median :0.0000   Median :13.370   Median :18.84   Median : 86.24  
+##  Mean   :0.3726   Mean   :14.127   Mean   :19.29   Mean   : 91.97  
+##  3rd Qu.:1.0000   3rd Qu.:15.780   3rd Qu.:21.80   3rd Qu.:104.10  
+##  Max.   :1.0000   Max.   :28.110   Max.   :39.28   Max.   :188.50  
+##    area_mean      smoothness_mean   compactness_mean  concavity_mean   
+##  Min.   : 143.5   Min.   :0.05263   Min.   :0.01938   Min.   :0.00000  
+##  1st Qu.: 420.3   1st Qu.:0.08637   1st Qu.:0.06492   1st Qu.:0.02956  
+##  Median : 551.1   Median :0.09587   Median :0.09263   Median :0.06154  
+##  Mean   : 654.9   Mean   :0.09636   Mean   :0.10434   Mean   :0.08880  
+##  3rd Qu.: 782.7   3rd Qu.:0.10530   3rd Qu.:0.13040   3rd Qu.:0.13070  
+##  Max.   :2501.0   Max.   :0.16340   Max.   :0.34540   Max.   :0.42680  
+##  concave.points_mean symmetry_mean    fractal_dimension_mean   radius_se     
+##  Min.   :0.00000     Min.   :0.1060   Min.   :0.04996        Min.   :0.1115  
+##  1st Qu.:0.02031     1st Qu.:0.1619   1st Qu.:0.05770        1st Qu.:0.2324  
+##  Median :0.03350     Median :0.1792   Median :0.06154        Median :0.3242  
+##  Mean   :0.04892     Mean   :0.1812   Mean   :0.06280        Mean   :0.4052  
+##  3rd Qu.:0.07400     3rd Qu.:0.1957   3rd Qu.:0.06612        3rd Qu.:0.4789  
+##  Max.   :0.20120     Max.   :0.3040   Max.   :0.09744        Max.   :2.8730  
+##    texture_se      perimeter_se       area_se        smoothness_se     
+##  Min.   :0.3602   Min.   : 0.757   Min.   :  6.802   Min.   :0.001713  
+##  1st Qu.:0.8339   1st Qu.: 1.606   1st Qu.: 17.850   1st Qu.:0.005169  
+##  Median :1.1080   Median : 2.287   Median : 24.530   Median :0.006380  
+##  Mean   :1.2169   Mean   : 2.866   Mean   : 40.337   Mean   :0.007041  
+##  3rd Qu.:1.4740   3rd Qu.: 3.357   3rd Qu.: 45.190   3rd Qu.:0.008146  
+##  Max.   :4.8850   Max.   :21.980   Max.   :542.200   Max.   :0.031130  
+##  compactness_se      concavity_se     concave.points_se   symmetry_se      
+##  Min.   :0.002252   Min.   :0.00000   Min.   :0.000000   Min.   :0.007882  
+##  1st Qu.:0.013080   1st Qu.:0.01509   1st Qu.:0.007638   1st Qu.:0.015160  
+##  Median :0.020450   Median :0.02589   Median :0.010930   Median :0.018730  
+##  Mean   :0.025478   Mean   :0.03189   Mean   :0.011796   Mean   :0.020542  
+##  3rd Qu.:0.032450   3rd Qu.:0.04205   3rd Qu.:0.014710   3rd Qu.:0.023480  
+##  Max.   :0.135400   Max.   :0.39600   Max.   :0.052790   Max.   :0.078950  
+##  fractal_dimension_se  radius_worst   texture_worst   perimeter_worst 
+##  Min.   :0.0008948    Min.   : 7.93   Min.   :12.02   Min.   : 50.41  
+##  1st Qu.:0.0022480    1st Qu.:13.01   1st Qu.:21.08   1st Qu.: 84.11  
+##  Median :0.0031870    Median :14.97   Median :25.41   Median : 97.66  
+##  Mean   :0.0037949    Mean   :16.27   Mean   :25.68   Mean   :107.26  
+##  3rd Qu.:0.0045580    3rd Qu.:18.79   3rd Qu.:29.72   3rd Qu.:125.40  
+##  Max.   :0.0298400    Max.   :36.04   Max.   :49.54   Max.   :251.20  
+##    area_worst     smoothness_worst  compactness_worst concavity_worst 
+##  Min.   : 185.2   Min.   :0.07117   Min.   :0.02729   Min.   :0.0000  
+##  1st Qu.: 515.3   1st Qu.:0.11660   1st Qu.:0.14720   1st Qu.:0.1145  
+##  Median : 686.5   Median :0.13130   Median :0.21190   Median :0.2267  
+##  Mean   : 880.6   Mean   :0.13237   Mean   :0.25427   Mean   :0.2722  
+##  3rd Qu.:1084.0   3rd Qu.:0.14600   3rd Qu.:0.33910   3rd Qu.:0.3829  
+##  Max.   :4254.0   Max.   :0.22260   Max.   :1.05800   Max.   :1.2520  
+##  concave.points_worst symmetry_worst   fractal_dimension_worst
+##  Min.   :0.00000      Min.   :0.1565   Min.   :0.05504        
+##  1st Qu.:0.06493      1st Qu.:0.2504   1st Qu.:0.07146        
+##  Median :0.09993      Median :0.2822   Median :0.08004        
+##  Mean   :0.11461      Mean   :0.2901   Mean   :0.08395        
+##  3rd Qu.:0.16140      3rd Qu.:0.3179   3rd Qu.:0.09208        
+##  Max.   :0.29100      Max.   :0.6638   Max.   :0.20750</code></pre>
+</div>
+
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+
+<script>
+$(document).ready(function ()  {
+
+    // temporarily add toc-ignore selector to headers for the consistency with Pandoc
+    $('.unlisted.unnumbered').addClass('toc-ignore')
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

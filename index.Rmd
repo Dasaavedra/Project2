@@ -1,0 +1,91 @@
+---
+title: "Breast Cancer Predictive Model"
+author: "Armando Saavedra"
+date: "3/22/2020"
+output:
+  html_document:
+    toc: true
+    toc_float: true
+    theme: cosmo
+---
+
+
+
+```{css, echo=FALSE}
+.fluid.row.title{
+  font-size: 2.9vw
+}
+h1{
+  font-size:1.9vw;
+  margin-top: 30px!important;
+  margin-bottom: 15px!important;
+  padding-top: 0px!important;
+  padding-bottom: 0px!important;
+  font-weight: bold;
+  border-bottom: solid 1px black;
+}
+
+h2{
+  margin-top: 30px!important;
+  margin-bottom: 15px!important;
+  padding-top: 0px!important;
+  padding-bottom: 0px!important;
+  font-size: 22px;
+  font-weight: bold
+}
+p{
+  display: block;
+  margin-block-start: 1em;
+  margin-block-end: 1em;
+  margin-inline-start: 0px;
+  margin-inline-end: 0px;
+  
+}
+
+```
+
+
+<style>
+.list-group-item.active, .list-group-item.active:focus, .list-group-item.active:hover {
+    background-color: black;
+}
+</style>
+
+# Introduction
+
+The goal of this project is to analyze spatial data summarizing the number of acidents in New york. The objective is to create a heat map where every zip code shows the number of car accidents.
+
+The information base of this analysis comes from a dataset found in Kaggle that provides differents 
+
+
+
+```{r,include = FALSE,message=FALSE, warning=FALSE,paged.print=TRUE}
+library(readxl)
+
+library(data.table)
+library(ggplot2)
+library(ggthemes)
+
+```
+# Data
+
+```{r,results = "hide"}
+data<-read.csv("C:/Users/dsaav/Documents/Projects/Datasets/Breast Cancer Prediction/data.csv",header = TRUE)
+sum(is.na(data$ZIP.CODE))
+
+```
+
+# Main Statistics
+```{r,message = FALSE,warning = FALSE}
+summary(data)
+
+```
+```{r,message = FALSE,warning = FALSE}
+dim(data)
+
+```
+```{r,message = FALSE,warning = FALSE}
+str(data)
+
+```
+
