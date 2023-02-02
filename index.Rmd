@@ -71,9 +71,16 @@ library(ggthemes)
 
 ```{r,results = "hide"}
 data<-read.csv("C:/Users/dsaav/Documents/Projects/Datasets/Breast Cancer Prediction/data.csv",header = TRUE)
-sum(is.na(data$ZIP.CODE))
+sum(is.na(data$ZI))
 
 ```
+```{r,message = FALSE,warning = FALSE}
+for (i in 1:ncol(data)){
+ print(paste(colnames(data)[i],"=", sum(is.na(data[,i]))))
+  }
+
+```
+
 
 # Main Statistics
 ```{r,message = FALSE,warning = FALSE}
@@ -88,4 +95,48 @@ dim(data)
 str(data)
 
 ```
+
+
+```{r,message = FALSE,warning = FALSE}
+data$diagnosis<-factor(data$diagnosis)
+
+```
+
+
+
+
+# Data Visualization
+
+```{r,message = FALSE,warning = FALSE}
+library(gridExtra)
+library(stringr)
+library(ggplot2)
+
+
+# Assign the columns of interest to a variable
+#target_variables <- colnames(data)[2:7]
+
+
+
+mulplot<-function(df,vars){
+  my_plots_list <-lapply(vars, function(each_variable) {
+    ggplot(df, aes_string(each_variable,fill=data$diagnosis)) + # NOTE - aes_string rather than aes
+      geom_density(alpha = 0.5,linetype = 1) +ggtitle(str_c(each_variable))+
+      theme(text=element_text(size = 9),legend.key.size = unit(0.5, 'cm'))+
+      labs(x = " Values", y = "Density",fill='R')
+    })
+  gridExtra::grid.arrange(grobs = my_plots_list, ncol = 2,widths=c(10,10))
+  }
+
+
+mulplot(data,colnames(data)[2:7])
+mulplot(data,colnames(data)[8:13])
+mulplot(data,colnames(data)[14:19])
+mulplot(data,colnames(data)[20:25])
+mulplot(data,colnames(data)[26:31])
+
+
+
+```
+
 

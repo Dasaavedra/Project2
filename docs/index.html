@@ -387,7 +387,41 @@ Kaggle that provides differents</p>
 <div id="data" class="section level1">
 <h1>Data</h1>
 <pre class="r"><code>data&lt;-read.csv(&quot;C:/Users/dsaav/Documents/Projects/Datasets/Breast Cancer Prediction/data.csv&quot;,header = TRUE)
-sum(is.na(data$ZIP.CODE))</code></pre>
+sum(is.na(data$ZI))</code></pre>
+<pre class="r"><code>for (i in 1:ncol(data)){
+ print(paste(colnames(data)[i],&quot;=&quot;, sum(is.na(data[,i]))))
+  }</code></pre>
+<pre><code>## [1] &quot;diagnosis = 0&quot;
+## [1] &quot;radius_mean = 0&quot;
+## [1] &quot;texture_mean = 0&quot;
+## [1] &quot;perimeter_mean = 0&quot;
+## [1] &quot;area_mean = 0&quot;
+## [1] &quot;smoothness_mean = 0&quot;
+## [1] &quot;compactness_mean = 0&quot;
+## [1] &quot;concavity_mean = 0&quot;
+## [1] &quot;concave.points_mean = 0&quot;
+## [1] &quot;symmetry_mean = 0&quot;
+## [1] &quot;fractal_dimension_mean = 0&quot;
+## [1] &quot;radius_se = 0&quot;
+## [1] &quot;texture_se = 0&quot;
+## [1] &quot;perimeter_se = 0&quot;
+## [1] &quot;area_se = 0&quot;
+## [1] &quot;smoothness_se = 0&quot;
+## [1] &quot;compactness_se = 0&quot;
+## [1] &quot;concavity_se = 0&quot;
+## [1] &quot;concave.points_se = 0&quot;
+## [1] &quot;symmetry_se = 0&quot;
+## [1] &quot;fractal_dimension_se = 0&quot;
+## [1] &quot;radius_worst = 0&quot;
+## [1] &quot;texture_worst = 0&quot;
+## [1] &quot;perimeter_worst = 0&quot;
+## [1] &quot;area_worst = 0&quot;
+## [1] &quot;smoothness_worst = 0&quot;
+## [1] &quot;compactness_worst = 0&quot;
+## [1] &quot;concavity_worst = 0&quot;
+## [1] &quot;concave.points_worst = 0&quot;
+## [1] &quot;symmetry_worst = 0&quot;
+## [1] &quot;fractal_dimension_worst = 0&quot;</code></pre>
 </div>
 <div id="main-statistics" class="section level1">
 <h1>Main Statistics</h1>
@@ -448,6 +482,73 @@ sum(is.na(data$ZIP.CODE))</code></pre>
 ##  Mean   :0.11461      Mean   :0.2901   Mean   :0.08395        
 ##  3rd Qu.:0.16140      3rd Qu.:0.3179   3rd Qu.:0.09208        
 ##  Max.   :0.29100      Max.   :0.6638   Max.   :0.20750</code></pre>
+<pre class="r"><code>dim(data)</code></pre>
+<pre><code>## [1] 569  31</code></pre>
+<pre class="r"><code>str(data)</code></pre>
+<pre><code>## &#39;data.frame&#39;:    569 obs. of  31 variables:
+##  $ diagnosis              : int  1 1 1 1 1 1 1 1 1 1 ...
+##  $ radius_mean            : num  18 20.6 19.7 11.4 20.3 ...
+##  $ texture_mean           : num  10.4 17.8 21.2 20.4 14.3 ...
+##  $ perimeter_mean         : num  122.8 132.9 130 77.6 135.1 ...
+##  $ area_mean              : num  1001 1326 1203 386 1297 ...
+##  $ smoothness_mean        : num  0.1184 0.0847 0.1096 0.1425 0.1003 ...
+##  $ compactness_mean       : num  0.2776 0.0786 0.1599 0.2839 0.1328 ...
+##  $ concavity_mean         : num  0.3001 0.0869 0.1974 0.2414 0.198 ...
+##  $ concave.points_mean    : num  0.1471 0.0702 0.1279 0.1052 0.1043 ...
+##  $ symmetry_mean          : num  0.242 0.181 0.207 0.26 0.181 ...
+##  $ fractal_dimension_mean : num  0.0787 0.0567 0.06 0.0974 0.0588 ...
+##  $ radius_se              : num  1.095 0.543 0.746 0.496 0.757 ...
+##  $ texture_se             : num  0.905 0.734 0.787 1.156 0.781 ...
+##  $ perimeter_se           : num  8.59 3.4 4.58 3.44 5.44 ...
+##  $ area_se                : num  153.4 74.1 94 27.2 94.4 ...
+##  $ smoothness_se          : num  0.0064 0.00522 0.00615 0.00911 0.01149 ...
+##  $ compactness_se         : num  0.049 0.0131 0.0401 0.0746 0.0246 ...
+##  $ concavity_se           : num  0.0537 0.0186 0.0383 0.0566 0.0569 ...
+##  $ concave.points_se      : num  0.0159 0.0134 0.0206 0.0187 0.0188 ...
+##  $ symmetry_se            : num  0.03 0.0139 0.0225 0.0596 0.0176 ...
+##  $ fractal_dimension_se   : num  0.00619 0.00353 0.00457 0.00921 0.00511 ...
+##  $ radius_worst           : num  25.4 25 23.6 14.9 22.5 ...
+##  $ texture_worst          : num  17.3 23.4 25.5 26.5 16.7 ...
+##  $ perimeter_worst        : num  184.6 158.8 152.5 98.9 152.2 ...
+##  $ area_worst             : num  2019 1956 1709 568 1575 ...
+##  $ smoothness_worst       : num  0.162 0.124 0.144 0.21 0.137 ...
+##  $ compactness_worst      : num  0.666 0.187 0.424 0.866 0.205 ...
+##  $ concavity_worst        : num  0.712 0.242 0.45 0.687 0.4 ...
+##  $ concave.points_worst   : num  0.265 0.186 0.243 0.258 0.163 ...
+##  $ symmetry_worst         : num  0.46 0.275 0.361 0.664 0.236 ...
+##  $ fractal_dimension_worst: num  0.1189 0.089 0.0876 0.173 0.0768 ...</code></pre>
+<pre class="r"><code>data$diagnosis&lt;-factor(data$diagnosis)</code></pre>
+</div>
+<div id="data-visualization" class="section level1">
+<h1>Data Visualization</h1>
+<pre class="r"><code>library(gridExtra)
+library(stringr)
+library(ggplot2)
+
+
+# Assign the columns of interest to a variable
+#target_variables &lt;- colnames(data)[2:7]
+
+
+mulplot&lt;-function(df,vars){
+  my_plots_list &lt;-lapply(vars, function(each_variable) {
+    ggplot(df, aes_string(each_variable,fill=data$diagnosis,color=data$diagnosis)) + # NOTE - aes_string rather than aes
+      geom_density(alpha = 0.5) +ggtitle(str_c(&quot;Distribution of &quot;,each_variable)) 
+    })
+  gridExtra::grid.arrange(grobs = my_plots_list, ncol = 2)
+  }
+
+
+mulplot(data,colnames(data)[2:7])</code></pre>
+<p><img src="index_files/figure-html/unnamed-chunk-9-1.png" width="672" /></p>
+<pre class="r"><code>mulplot(data,colnames(data)[8:13])</code></pre>
+<p><img src="index_files/figure-html/unnamed-chunk-9-2.png" width="672" /></p>
+<pre class="r"><code>mulplot(data,colnames(data)[14:19])</code></pre>
+<p><img src="index_files/figure-html/unnamed-chunk-9-3.png" width="672" /></p>
+<pre class="r"><code>mulplot(data,colnames(data)[20:25])</code></pre>
+<p><img src="index_files/figure-html/unnamed-chunk-9-4.png" width="672" /></p>
+<pre class="r"><code>mulplot(data,colnames(data)[26:31])</code></pre>
+<p><img src="index_files/figure-html/unnamed-chunk-9-5.png" width="672" /></p>
 </div>
 
 
