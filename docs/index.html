@@ -530,12 +530,15 @@ library(ggplot2)
 #target_variables &lt;- colnames(data)[2:7]
 
 
+
 mulplot&lt;-function(df,vars){
   my_plots_list &lt;-lapply(vars, function(each_variable) {
-    ggplot(df, aes_string(each_variable,fill=data$diagnosis,color=data$diagnosis)) + # NOTE - aes_string rather than aes
-      geom_density(alpha = 0.5) +ggtitle(str_c(&quot;Distribution of &quot;,each_variable)) 
+    ggplot(df, aes_string(each_variable,fill=data$diagnosis)) + # NOTE - aes_string rather than aes
+      geom_density(alpha = 0.5,linetype = 1) +ggtitle(str_c(each_variable))+
+      theme(text=element_text(size = 9),legend.key.size = unit(0.5, &#39;cm&#39;))+
+      labs(x = &quot; Values&quot;, y = &quot;Density&quot;,fill=&#39;R&#39;)
     })
-  gridExtra::grid.arrange(grobs = my_plots_list, ncol = 2)
+  gridExtra::grid.arrange(grobs = my_plots_list, ncol = 2,widths=c(10,10))
   }
 
 
