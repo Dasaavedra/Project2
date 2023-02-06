@@ -7,3 +7,4 @@ output:
     theme: flatly  
 navbar:  
   title: "Portfolio R" 
+  

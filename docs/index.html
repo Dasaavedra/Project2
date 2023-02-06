@@ -34,8 +34,6 @@
 <link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
 <script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
-<link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
-<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
 
 <style type="text/css">
   code{white-space: pre-wrap;}
@@ -46,18 +44,109 @@
   ul.task-list{list-style: none;}
     </style>
 
-<style type="text/css">code{white-space: pre;}</style>
-<script type="text/javascript">
-if (window.hljs) {
-  hljs.configure({languages: []});
-  hljs.initHighlightingOnLoad();
-  if (document.readyState && document.readyState === "complete") {
-    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+
+
+<style type="text/css">
+  code {
+    white-space: pre;
   }
+  .sourceCode {
+    overflow: visible;
+  }
+</style>
+<style type="text/css" data-origin="pandoc">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
 }
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {  background-color: #f8f8f8; }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ef2929; } /* Alert */
+code span.an { color: #8f5902; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #c4a000; } /* Attribute */
+code span.bn { color: #0000cf; } /* BaseN */
+code span.cf { color: #204a87; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4e9a06; } /* Char */
+code span.cn { color: #000000; } /* Constant */
+code span.co { color: #8f5902; font-style: italic; } /* Comment */
+code span.cv { color: #8f5902; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #8f5902; font-weight: bold; font-style: italic; } /* Documentation */
+code span.dt { color: #204a87; } /* DataType */
+code span.dv { color: #0000cf; } /* DecVal */
+code span.er { color: #a40000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #0000cf; } /* Float */
+code span.fu { color: #000000; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #8f5902; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #204a87; font-weight: bold; } /* Keyword */
+code span.op { color: #ce5c00; font-weight: bold; } /* Operator */
+code span.ot { color: #8f5902; } /* Other */
+code span.pp { color: #8f5902; font-style: italic; } /* Preprocessor */
+code span.sc { color: #000000; } /* SpecialChar */
+code span.ss { color: #4e9a06; } /* SpecialString */
+code span.st { color: #4e9a06; } /* String */
+code span.va { color: #000000; } /* Variable */
+code span.vs { color: #4e9a06; } /* VerbatimString */
+code span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warning */
+
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    var j = 0;
+    while (j < rules.length) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") {
+        j++;
+        continue;
+      }
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') {
+        j++;
+        continue;
+      }
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
 </script>
-
-
 
 
 
@@ -386,105 +475,129 @@ Kaggle that provides differents</p>
 </div>
 <div id="data" class="section level1">
 <h1>Data</h1>
-<pre class="r"><code>data&lt;-read.csv(&quot;C:/Users/dsaav/Documents/Projects/Datasets/Breast Cancer Prediction/data.csv&quot;,header = TRUE)
-sum(is.na(data$ZI))</code></pre>
-<pre class="r"><code>for (i in 1:ncol(data)){
- print(paste(colnames(data)[i],&quot;=&quot;, sum(is.na(data[,i]))))
-  }</code></pre>
-<pre><code>## [1] &quot;diagnosis = 0&quot;
-## [1] &quot;radius_mean = 0&quot;
-## [1] &quot;texture_mean = 0&quot;
-## [1] &quot;perimeter_mean = 0&quot;
-## [1] &quot;area_mean = 0&quot;
-## [1] &quot;smoothness_mean = 0&quot;
-## [1] &quot;compactness_mean = 0&quot;
-## [1] &quot;concavity_mean = 0&quot;
-## [1] &quot;concave.points_mean = 0&quot;
-## [1] &quot;symmetry_mean = 0&quot;
-## [1] &quot;fractal_dimension_mean = 0&quot;
-## [1] &quot;radius_se = 0&quot;
-## [1] &quot;texture_se = 0&quot;
-## [1] &quot;perimeter_se = 0&quot;
-## [1] &quot;area_se = 0&quot;
-## [1] &quot;smoothness_se = 0&quot;
-## [1] &quot;compactness_se = 0&quot;
-## [1] &quot;concavity_se = 0&quot;
-## [1] &quot;concave.points_se = 0&quot;
-## [1] &quot;symmetry_se = 0&quot;
-## [1] &quot;fractal_dimension_se = 0&quot;
-## [1] &quot;radius_worst = 0&quot;
-## [1] &quot;texture_worst = 0&quot;
-## [1] &quot;perimeter_worst = 0&quot;
-## [1] &quot;area_worst = 0&quot;
-## [1] &quot;smoothness_worst = 0&quot;
-## [1] &quot;compactness_worst = 0&quot;
-## [1] &quot;concavity_worst = 0&quot;
-## [1] &quot;concave.points_worst = 0&quot;
-## [1] &quot;symmetry_worst = 0&quot;
-## [1] &quot;fractal_dimension_worst = 0&quot;</code></pre>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>data<span class="ot">&lt;-</span><span class="fu">read.csv</span>(<span class="st">&quot;C:/Users/dsaav/Documents/Projects/Datasets/Breast Cancer Prediction/data.csv&quot;</span>,</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>               <span class="at">header =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="fu">sum</span>(<span class="fu">is.na</span>(data<span class="sc">$</span>ZI)))</span></code></pre></div>
+<pre><code>[1] 0</code></pre>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">ncol</span>(data)){</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a> <span class="fu">print</span>(<span class="fu">paste</span>(<span class="fu">colnames</span>(data)[i],<span class="st">&quot;=&quot;</span>, <span class="fu">sum</span>(<span class="fu">is.na</span>(data[,i]))))</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  }</span></code></pre></div>
+<pre><code>[1] &quot;diagnosis = 0&quot;
+[1] &quot;radius_mean = 0&quot;
+[1] &quot;texture_mean = 0&quot;
+[1] &quot;perimeter_mean = 0&quot;
+[1] &quot;area_mean = 0&quot;
+[1] &quot;smoothness_mean = 0&quot;
+[1] &quot;compactness_mean = 0&quot;
+[1] &quot;concavity_mean = 0&quot;
+[1] &quot;concave.points_mean = 0&quot;
+[1] &quot;symmetry_mean = 0&quot;
+[1] &quot;fractal_dimension_mean = 0&quot;
+[1] &quot;radius_se = 0&quot;
+[1] &quot;texture_se = 0&quot;
+[1] &quot;perimeter_se = 0&quot;
+[1] &quot;area_se = 0&quot;
+[1] &quot;smoothness_se = 0&quot;
+[1] &quot;compactness_se = 0&quot;
+[1] &quot;concavity_se = 0&quot;
+[1] &quot;concave.points_se = 0&quot;
+[1] &quot;symmetry_se = 0&quot;
+[1] &quot;fractal_dimension_se = 0&quot;
+[1] &quot;radius_worst = 0&quot;
+[1] &quot;texture_worst = 0&quot;
+[1] &quot;perimeter_worst = 0&quot;
+[1] &quot;area_worst = 0&quot;
+[1] &quot;smoothness_worst = 0&quot;
+[1] &quot;compactness_worst = 0&quot;
+[1] &quot;concavity_worst = 0&quot;
+[1] &quot;concave.points_worst = 0&quot;
+[1] &quot;symmetry_worst = 0&quot;
+[1] &quot;fractal_dimension_worst = 0&quot;</code></pre>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(data)</span></code></pre></div>
+<pre><code>  diagnosis radius_mean texture_mean perimeter_mean area_mean smoothness_mean compactness_mean concavity_mean
+1         1       17.99        10.38         122.80    1001.0         0.11840          0.27760         0.3001
+2         1       20.57        17.77         132.90    1326.0         0.08474          0.07864         0.0869
+3         1       19.69        21.25         130.00    1203.0         0.10960          0.15990         0.1974
+4         1       11.42        20.38          77.58     386.1         0.14250          0.28390         0.2414
+5         1       20.29        14.34         135.10    1297.0         0.10030          0.13280         0.1980
+6         1       12.45        15.70          82.57     477.1         0.12780          0.17000         0.1578
+  concave.points_mean symmetry_mean fractal_dimension_mean radius_se texture_se perimeter_se area_se
+1             0.14710        0.2419                0.07871    1.0950     0.9053        8.589  153.40
+2             0.07017        0.1812                0.05667    0.5435     0.7339        3.398   74.08
+3             0.12790        0.2069                0.05999    0.7456     0.7869        4.585   94.03
+4             0.10520        0.2597                0.09744    0.4956     1.1560        3.445   27.23
+5             0.10430        0.1809                0.05883    0.7572     0.7813        5.438   94.44
+6             0.08089        0.2087                0.07613    0.3345     0.8902        2.217   27.19
+  smoothness_se compactness_se concavity_se concave.points_se symmetry_se fractal_dimension_se radius_worst
+1      0.006399        0.04904      0.05373           0.01587     0.03003             0.006193        25.38
+2      0.005225        0.01308      0.01860           0.01340     0.01389             0.003532        24.99
+3      0.006150        0.04006      0.03832           0.02058     0.02250             0.004571        23.57
+4      0.009110        0.07458      0.05661           0.01867     0.05963             0.009208        14.91
+5      0.011490        0.02461      0.05688           0.01885     0.01756             0.005115        22.54
+6      0.007510        0.03345      0.03672           0.01137     0.02165             0.005082        15.47
+  texture_worst perimeter_worst area_worst smoothness_worst compactness_worst concavity_worst
+1         17.33          184.60     2019.0           0.1622            0.6656          0.7119
+2         23.41          158.80     1956.0           0.1238            0.1866          0.2416
+3         25.53          152.50     1709.0           0.1444            0.4245          0.4504
+4         26.50           98.87      567.7           0.2098            0.8663          0.6869
+5         16.67          152.20     1575.0           0.1374            0.2050          0.4000
+6         23.75          103.40      741.6           0.1791            0.5249          0.5355
+  concave.points_worst symmetry_worst fractal_dimension_worst
+1               0.2654         0.4601                 0.11890
+2               0.1860         0.2750                 0.08902
+3               0.2430         0.3613                 0.08758
+4               0.2575         0.6638                 0.17300
+5               0.1625         0.2364                 0.07678
+6               0.1741         0.3985                 0.12440</code></pre>
 </div>
 <div id="main-statistics" class="section level1">
 <h1>Main Statistics</h1>
-<pre class="r"><code>summary(data)</code></pre>
-<pre><code>##    diagnosis       radius_mean      texture_mean   perimeter_mean  
-##  Min.   :0.0000   Min.   : 6.981   Min.   : 9.71   Min.   : 43.79  
-##  1st Qu.:0.0000   1st Qu.:11.700   1st Qu.:16.17   1st Qu.: 75.17  
-##  Median :0.0000   Median :13.370   Median :18.84   Median : 86.24  
-##  Mean   :0.3726   Mean   :14.127   Mean   :19.29   Mean   : 91.97  
-##  3rd Qu.:1.0000   3rd Qu.:15.780   3rd Qu.:21.80   3rd Qu.:104.10  
-##  Max.   :1.0000   Max.   :28.110   Max.   :39.28   Max.   :188.50  
-##    area_mean      smoothness_mean   compactness_mean  concavity_mean   
-##  Min.   : 143.5   Min.   :0.05263   Min.   :0.01938   Min.   :0.00000  
-##  1st Qu.: 420.3   1st Qu.:0.08637   1st Qu.:0.06492   1st Qu.:0.02956  
-##  Median : 551.1   Median :0.09587   Median :0.09263   Median :0.06154  
-##  Mean   : 654.9   Mean   :0.09636   Mean   :0.10434   Mean   :0.08880  
-##  3rd Qu.: 782.7   3rd Qu.:0.10530   3rd Qu.:0.13040   3rd Qu.:0.13070  
-##  Max.   :2501.0   Max.   :0.16340   Max.   :0.34540   Max.   :0.42680  
-##  concave.points_mean symmetry_mean    fractal_dimension_mean   radius_se     
-##  Min.   :0.00000     Min.   :0.1060   Min.   :0.04996        Min.   :0.1115  
-##  1st Qu.:0.02031     1st Qu.:0.1619   1st Qu.:0.05770        1st Qu.:0.2324  
-##  Median :0.03350     Median :0.1792   Median :0.06154        Median :0.3242  
-##  Mean   :0.04892     Mean   :0.1812   Mean   :0.06280        Mean   :0.4052  
-##  3rd Qu.:0.07400     3rd Qu.:0.1957   3rd Qu.:0.06612        3rd Qu.:0.4789  
-##  Max.   :0.20120     Max.   :0.3040   Max.   :0.09744        Max.   :2.8730  
-##    texture_se      perimeter_se       area_se        smoothness_se     
-##  Min.   :0.3602   Min.   : 0.757   Min.   :  6.802   Min.   :0.001713  
-##  1st Qu.:0.8339   1st Qu.: 1.606   1st Qu.: 17.850   1st Qu.:0.005169  
-##  Median :1.1080   Median : 2.287   Median : 24.530   Median :0.006380  
-##  Mean   :1.2169   Mean   : 2.866   Mean   : 40.337   Mean   :0.007041  
-##  3rd Qu.:1.4740   3rd Qu.: 3.357   3rd Qu.: 45.190   3rd Qu.:0.008146  
-##  Max.   :4.8850   Max.   :21.980   Max.   :542.200   Max.   :0.031130  
-##  compactness_se      concavity_se     concave.points_se   symmetry_se      
-##  Min.   :0.002252   Min.   :0.00000   Min.   :0.000000   Min.   :0.007882  
-##  1st Qu.:0.013080   1st Qu.:0.01509   1st Qu.:0.007638   1st Qu.:0.015160  
-##  Median :0.020450   Median :0.02589   Median :0.010930   Median :0.018730  
-##  Mean   :0.025478   Mean   :0.03189   Mean   :0.011796   Mean   :0.020542  
-##  3rd Qu.:0.032450   3rd Qu.:0.04205   3rd Qu.:0.014710   3rd Qu.:0.023480  
-##  Max.   :0.135400   Max.   :0.39600   Max.   :0.052790   Max.   :0.078950  
-##  fractal_dimension_se  radius_worst   texture_worst   perimeter_worst 
-##  Min.   :0.0008948    Min.   : 7.93   Min.   :12.02   Min.   : 50.41  
-##  1st Qu.:0.0022480    1st Qu.:13.01   1st Qu.:21.08   1st Qu.: 84.11  
-##  Median :0.0031870    Median :14.97   Median :25.41   Median : 97.66  
-##  Mean   :0.0037949    Mean   :16.27   Mean   :25.68   Mean   :107.26  
-##  3rd Qu.:0.0045580    3rd Qu.:18.79   3rd Qu.:29.72   3rd Qu.:125.40  
-##  Max.   :0.0298400    Max.   :36.04   Max.   :49.54   Max.   :251.20  
-##    area_worst     smoothness_worst  compactness_worst concavity_worst 
-##  Min.   : 185.2   Min.   :0.07117   Min.   :0.02729   Min.   :0.0000  
-##  1st Qu.: 515.3   1st Qu.:0.11660   1st Qu.:0.14720   1st Qu.:0.1145  
-##  Median : 686.5   Median :0.13130   Median :0.21190   Median :0.2267  
-##  Mean   : 880.6   Mean   :0.13237   Mean   :0.25427   Mean   :0.2722  
-##  3rd Qu.:1084.0   3rd Qu.:0.14600   3rd Qu.:0.33910   3rd Qu.:0.3829  
-##  Max.   :4254.0   Max.   :0.22260   Max.   :1.05800   Max.   :1.2520  
-##  concave.points_worst symmetry_worst   fractal_dimension_worst
-##  Min.   :0.00000      Min.   :0.1565   Min.   :0.05504        
-##  1st Qu.:0.06493      1st Qu.:0.2504   1st Qu.:0.07146        
-##  Median :0.09993      Median :0.2822   Median :0.08004        
-##  Mean   :0.11461      Mean   :0.2901   Mean   :0.08395        
-##  3rd Qu.:0.16140      3rd Qu.:0.3179   3rd Qu.:0.09208        
-##  Max.   :0.29100      Max.   :0.6638   Max.   :0.20750</code></pre>
-<pre class="r"><code>dim(data)</code></pre>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(data)</span></code></pre></div>
+<pre><code>   diagnosis       radius_mean      texture_mean   perimeter_mean     area_mean      smoothness_mean  
+ Min.   :0.0000   Min.   : 6.981   Min.   : 9.71   Min.   : 43.79   Min.   : 143.5   Min.   :0.05263  
+ 1st Qu.:0.0000   1st Qu.:11.700   1st Qu.:16.17   1st Qu.: 75.17   1st Qu.: 420.3   1st Qu.:0.08637  
+ Median :0.0000   Median :13.370   Median :18.84   Median : 86.24   Median : 551.1   Median :0.09587  
+ Mean   :0.3726   Mean   :14.127   Mean   :19.29   Mean   : 91.97   Mean   : 654.9   Mean   :0.09636  
+ 3rd Qu.:1.0000   3rd Qu.:15.780   3rd Qu.:21.80   3rd Qu.:104.10   3rd Qu.: 782.7   3rd Qu.:0.10530  
+ Max.   :1.0000   Max.   :28.110   Max.   :39.28   Max.   :188.50   Max.   :2501.0   Max.   :0.16340  
+ compactness_mean  concavity_mean    concave.points_mean symmetry_mean    fractal_dimension_mean
+ Min.   :0.01938   Min.   :0.00000   Min.   :0.00000     Min.   :0.1060   Min.   :0.04996       
+ 1st Qu.:0.06492   1st Qu.:0.02956   1st Qu.:0.02031     1st Qu.:0.1619   1st Qu.:0.05770       
+ Median :0.09263   Median :0.06154   Median :0.03350     Median :0.1792   Median :0.06154       
+ Mean   :0.10434   Mean   :0.08880   Mean   :0.04892     Mean   :0.1812   Mean   :0.06280       
+ 3rd Qu.:0.13040   3rd Qu.:0.13070   3rd Qu.:0.07400     3rd Qu.:0.1957   3rd Qu.:0.06612       
+ Max.   :0.34540   Max.   :0.42680   Max.   :0.20120     Max.   :0.3040   Max.   :0.09744       
+   radius_se        texture_se      perimeter_se       area_se        smoothness_se      compactness_se    
+ Min.   :0.1115   Min.   :0.3602   Min.   : 0.757   Min.   :  6.802   Min.   :0.001713   Min.   :0.002252  
+ 1st Qu.:0.2324   1st Qu.:0.8339   1st Qu.: 1.606   1st Qu.: 17.850   1st Qu.:0.005169   1st Qu.:0.013080  
+ Median :0.3242   Median :1.1080   Median : 2.287   Median : 24.530   Median :0.006380   Median :0.020450  
+ Mean   :0.4052   Mean   :1.2169   Mean   : 2.866   Mean   : 40.337   Mean   :0.007041   Mean   :0.025478  
+ 3rd Qu.:0.4789   3rd Qu.:1.4740   3rd Qu.: 3.357   3rd Qu.: 45.190   3rd Qu.:0.008146   3rd Qu.:0.032450  
+ Max.   :2.8730   Max.   :4.8850   Max.   :21.980   Max.   :542.200   Max.   :0.031130   Max.   :0.135400  
+  concavity_se     concave.points_se   symmetry_se       fractal_dimension_se  radius_worst   texture_worst  
+ Min.   :0.00000   Min.   :0.000000   Min.   :0.007882   Min.   :0.0008948    Min.   : 7.93   Min.   :12.02  
+ 1st Qu.:0.01509   1st Qu.:0.007638   1st Qu.:0.015160   1st Qu.:0.0022480    1st Qu.:13.01   1st Qu.:21.08  
+ Median :0.02589   Median :0.010930   Median :0.018730   Median :0.0031870    Median :14.97   Median :25.41  
+ Mean   :0.03189   Mean   :0.011796   Mean   :0.020542   Mean   :0.0037949    Mean   :16.27   Mean   :25.68  
+ 3rd Qu.:0.04205   3rd Qu.:0.014710   3rd Qu.:0.023480   3rd Qu.:0.0045580    3rd Qu.:18.79   3rd Qu.:29.72  
+ Max.   :0.39600   Max.   :0.052790   Max.   :0.078950   Max.   :0.0298400    Max.   :36.04   Max.   :49.54  
+ perimeter_worst    area_worst     smoothness_worst  compactness_worst concavity_worst  concave.points_worst
+ Min.   : 50.41   Min.   : 185.2   Min.   :0.07117   Min.   :0.02729   Min.   :0.0000   Min.   :0.00000     
+ 1st Qu.: 84.11   1st Qu.: 515.3   1st Qu.:0.11660   1st Qu.:0.14720   1st Qu.:0.1145   1st Qu.:0.06493     
+ Median : 97.66   Median : 686.5   Median :0.13130   Median :0.21190   Median :0.2267   Median :0.09993     
+ Mean   :107.26   Mean   : 880.6   Mean   :0.13237   Mean   :0.25427   Mean   :0.2722   Mean   :0.11461     
+ 3rd Qu.:125.40   3rd Qu.:1084.0   3rd Qu.:0.14600   3rd Qu.:0.33910   3rd Qu.:0.3829   3rd Qu.:0.16140     
+ Max.   :251.20   Max.   :4254.0   Max.   :0.22260   Max.   :1.05800   Max.   :1.2520   Max.   :0.29100     
+ symmetry_worst   fractal_dimension_worst
+ Min.   :0.1565   Min.   :0.05504        
+ 1st Qu.:0.2504   1st Qu.:0.07146        
+ Median :0.2822   Median :0.08004        
+ Mean   :0.2901   Mean   :0.08395        
+ 3rd Qu.:0.3179   3rd Qu.:0.09208        
+ Max.   :0.6638   Max.   :0.20750        </code></pre>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">dim</span>(data)</span></code></pre></div>
 <pre><code>## [1] 569  31</code></pre>
-<pre class="r"><code>str(data)</code></pre>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(data)</span></code></pre></div>
 <pre><code>## &#39;data.frame&#39;:    569 obs. of  31 variables:
 ##  $ diagnosis              : int  1 1 1 1 1 1 1 1 1 1 ...
 ##  $ radius_mean            : num  18 20.6 19.7 11.4 20.3 ...
@@ -517,41 +630,103 @@ sum(is.na(data$ZI))</code></pre>
 ##  $ concave.points_worst   : num  0.265 0.186 0.243 0.258 0.163 ...
 ##  $ symmetry_worst         : num  0.46 0.275 0.361 0.664 0.236 ...
 ##  $ fractal_dimension_worst: num  0.1189 0.089 0.0876 0.173 0.0768 ...</code></pre>
-<pre class="r"><code>data$diagnosis&lt;-factor(data$diagnosis)</code></pre>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>data<span class="sc">$</span>diagnosis<span class="ot">&lt;-</span><span class="fu">factor</span>(data<span class="sc">$</span>diagnosis)</span></code></pre></div>
 </div>
 <div id="data-visualization" class="section level1">
 <h1>Data Visualization</h1>
-<pre class="r"><code>library(gridExtra)
-library(stringr)
-library(ggplot2)
+<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(gridExtra)</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(stringr)</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Assign the columns of interest to a variable</span></span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a><span class="co">#target_variables &lt;- colnames(data)[2:7]</span></span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a>mulplot<span class="ot">&lt;-</span><span class="cf">function</span>(df,vars){</span>
+<span id="cb14-12"><a href="#cb14-12" aria-hidden="true" tabindex="-1"></a>  my_plots_list <span class="ot">&lt;-</span><span class="fu">lapply</span>(vars, <span class="cf">function</span>(each_variable) {</span>
+<span id="cb14-13"><a href="#cb14-13" aria-hidden="true" tabindex="-1"></a>    <span class="fu">ggplot</span>(df, <span class="fu">aes_string</span>(each_variable,<span class="at">fill=</span>data<span class="sc">$</span>diagnosis)) <span class="sc">+</span> <span class="co"># </span><span class="al">NOTE</span><span class="co"> - aes_string rather than aes</span></span>
+<span id="cb14-14"><a href="#cb14-14" aria-hidden="true" tabindex="-1"></a>      <span class="fu">geom_density</span>(<span class="at">alpha =</span> <span class="fl">0.5</span>,<span class="at">linetype =</span> <span class="dv">1</span>) <span class="sc">+</span><span class="fu">ggtitle</span>(<span class="fu">str_c</span>(each_variable))<span class="sc">+</span></span>
+<span id="cb14-15"><a href="#cb14-15" aria-hidden="true" tabindex="-1"></a>      <span class="fu">theme</span>(<span class="at">text=</span><span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">9</span>),<span class="at">legend.key.size =</span> <span class="fu">unit</span>(<span class="fl">0.5</span>, <span class="st">&#39;cm&#39;</span>))<span class="sc">+</span></span>
+<span id="cb14-16"><a href="#cb14-16" aria-hidden="true" tabindex="-1"></a>      <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">&quot; Values&quot;</span>, <span class="at">y =</span> <span class="st">&quot;Density&quot;</span>,<span class="at">fill=</span><span class="st">&#39;RGIT&#39;</span>)</span>
+<span id="cb14-17"><a href="#cb14-17" aria-hidden="true" tabindex="-1"></a>    })</span>
+<span id="cb14-18"><a href="#cb14-18" aria-hidden="true" tabindex="-1"></a>  gridExtra<span class="sc">::</span><span class="fu">grid.arrange</span>(<span class="at">grobs =</span> my_plots_list, <span class="at">ncol =</span> <span class="dv">2</span>,<span class="at">widths=</span><span class="fu">c</span>(<span class="dv">10</span>,<span class="dv">10</span>))</span>
+<span id="cb14-19"><a href="#cb14-19" aria-hidden="true" tabindex="-1"></a>  }</span></code></pre></div>
+<p><img src="index_files/figure-html/unnamed-chunk-29-1.png" width="672" /><img src="index_files/figure-html/unnamed-chunk-29-2.png" width="672" /><img src="index_files/figure-html/unnamed-chunk-29-3.png" width="672" /><img src="index_files/figure-html/unnamed-chunk-29-4.png" width="672" /><img src="index_files/figure-html/unnamed-chunk-29-5.png" width="672" /></p>
+</div>
+<div id="training-and-testing-data" class="section level1">
+<h1>Training and Testing Data</h1>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>train_test<span class="ot">&lt;-</span><span class="cf">function</span>(df){</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set.seed</span>(<span class="dv">1</span>)</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>  sample <span class="ot">&lt;-</span> <span class="fu">sample</span>(<span class="fu">c</span>(<span class="cn">TRUE</span>, <span class="cn">FALSE</span>), <span class="fu">nrow</span>(df), <span class="at">replace=</span><span class="cn">TRUE</span>, <span class="at">prob=</span><span class="fu">c</span>(<span class="fl">0.7</span>,<span class="fl">0.3</span>))</span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>  train  <span class="ot">&lt;-</span> df[sample, ]</span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>  test   <span class="ot">&lt;-</span> df[<span class="sc">!</span>sample, ]</span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>  results <span class="ot">&lt;-</span> <span class="fu">list</span>(train,test)</span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(results)</span>
+<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a>results<span class="ot">=</span><span class="fu">train_test</span>(data)</span>
+<span id="cb15-12"><a href="#cb15-12" aria-hidden="true" tabindex="-1"></a>train<span class="ot">&lt;-</span>results[[<span class="dv">1</span>]]</span>
+<span id="cb15-13"><a href="#cb15-13" aria-hidden="true" tabindex="-1"></a>test<span class="ot">&lt;-</span>results[[<span class="dv">2</span>]]</span></code></pre></div>
+</div>
+<div id="logistic-regression-model" class="section level1">
+<h1>Logistic Regression Model</h1>
+<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>logistic<span class="ot">&lt;-</span><span class="fu">glm</span>(<span class="at">formula=</span>diagnosis <span class="sc">~</span> ., <span class="at">data=</span>train,<span class="at">family=</span><span class="st">&quot;binomial&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(logistic)</span></code></pre></div>
+<pre><code>
+Call:
+glm(formula = diagnosis ~ ., family = &quot;binomial&quot;, data = train)
 
+Deviance Residuals: 
+       Min          1Q      Median          3Q         Max  
+-1.562e-04  -2.100e-08  -2.100e-08   2.100e-08   2.082e-04  
 
-# Assign the columns of interest to a variable
-#target_variables &lt;- colnames(data)[2:7]
+Coefficients:
+                          Estimate Std. Error z value Pr(&gt;|z|)
+(Intercept)             -2.769e+03  1.333e+06  -0.002    0.998
+radius_mean             -6.129e+02  1.792e+05  -0.003    0.997
+texture_mean            -1.033e+01  1.817e+04  -0.001    1.000
+perimeter_mean           9.301e+01  3.949e+04   0.002    0.998
+area_mean               -4.555e-02  1.344e+03   0.000    1.000
+smoothness_mean         -2.090e+03  3.667e+06  -0.001    1.000
+compactness_mean        -4.329e+03  1.342e+06  -0.003    0.997
+concavity_mean          -2.431e+03  2.714e+06  -0.001    0.999
+concave.points_mean      5.377e+03  5.447e+06   0.001    0.999
+symmetry_mean           -2.639e+02  7.108e+05   0.000    1.000
+fractal_dimension_mean   2.684e+03  1.799e+07   0.000    1.000
+radius_se                1.376e+03  1.269e+06   0.001    0.999
+texture_se               4.405e+01  6.046e+04   0.001    0.999
+perimeter_se            -1.456e+02  7.731e+04  -0.002    0.998
+area_se                 -8.159e-01  8.983e+03   0.000    1.000
+smoothness_se           -1.072e+04  2.885e+07   0.000    1.000
+compactness_se          -8.219e+03  9.777e+06  -0.001    0.999
+concavity_se             1.409e+02  2.317e+06   0.000    1.000
+concave.points_se        3.595e+04  1.971e+07   0.002    0.999
+symmetry_se              3.044e+02  5.841e+06   0.000    1.000
+fractal_dimension_se    -3.789e+04  3.490e+07  -0.001    0.999
+radius_worst            -5.313e+01  2.307e+05   0.000    1.000
+texture_worst            1.562e+01  1.466e+04   0.001    0.999
+perimeter_worst          3.458e+01  1.745e+04   0.002    0.998
+area_worst              -1.117e+00  1.354e+03  -0.001    0.999
+smoothness_worst         4.146e+03  2.702e+06   0.002    0.999
+compactness_worst       -4.934e+02  5.660e+05  -0.001    0.999
+concavity_worst          1.087e+03  5.958e+05   0.002    0.999
+concave.points_worst    -3.355e+03  2.790e+06  -0.001    0.999
+symmetry_worst           3.068e+02  6.047e+05   0.001    1.000
+fractal_dimension_worst  7.661e+03  7.809e+06   0.001    0.999
 
+(Dispersion parameter for binomial family taken to be 1)
 
+    Null deviance: 5.3019e+02  on 400  degrees of freedom
+Residual deviance: 2.5460e-07  on 370  degrees of freedom
+AIC: 62
 
-mulplot&lt;-function(df,vars){
-  my_plots_list &lt;-lapply(vars, function(each_variable) {
-    ggplot(df, aes_string(each_variable,fill=data$diagnosis)) + # NOTE - aes_string rather than aes
-      geom_density(alpha = 0.5,linetype = 1) +ggtitle(str_c(each_variable))+
-      theme(text=element_text(size = 9),legend.key.size = unit(0.5, &#39;cm&#39;))+
-      labs(x = &quot; Values&quot;, y = &quot;Density&quot;,fill=&#39;R&#39;)
-    })
-  gridExtra::grid.arrange(grobs = my_plots_list, ncol = 2,widths=c(10,10))
-  }
-
-
-mulplot(data,colnames(data)[2:7])</code></pre>
-<p><img src="index_files/figure-html/unnamed-chunk-9-1.png" width="672" /></p>
-<pre class="r"><code>mulplot(data,colnames(data)[8:13])</code></pre>
-<p><img src="index_files/figure-html/unnamed-chunk-9-2.png" width="672" /></p>
-<pre class="r"><code>mulplot(data,colnames(data)[14:19])</code></pre>
-<p><img src="index_files/figure-html/unnamed-chunk-9-3.png" width="672" /></p>
-<pre class="r"><code>mulplot(data,colnames(data)[20:25])</code></pre>
-<p><img src="index_files/figure-html/unnamed-chunk-9-4.png" width="672" /></p>
-<pre class="r"><code>mulplot(data,colnames(data)[26:31])</code></pre>
-<p><img src="index_files/figure-html/unnamed-chunk-9-5.png" width="672" /></p>
+Number of Fisher Scoring iterations: 25</code></pre>
 </div>
 
 

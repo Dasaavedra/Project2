@@ -6,3 +6,4 @@ setwd("C:/Users/dsaav/Documents/Projects/R/Portfolio/Project 2")
 
 #render your sweet site. 
 rmarkdown::render_site()
+

@@ -6,7 +6,10 @@ output:
   html_document:
     toc: true
     toc_float: true
-    theme: cosmo
+    theme: cosmo # cosmo, darkly, flatly,spacelab,united,yeti        
+            #bootstrap, cerulean,journal,lumen, paper,readable,sandstone,simplex
+    highlight: tango #kate, pygments, tango, monochrome,haddock 
+                       #zenburn,  espresso,textmate
 ---
 
 
@@ -45,11 +48,17 @@ p{
 ```
 
 
+
+
+
 <style>
 .list-group-item.active, .list-group-item.active:focus, .list-group-item.active:hover {
     background-color: black;
 }
 </style>
+
+
+
 
 # Introduction
 
@@ -69,21 +78,30 @@ library(ggthemes)
 ```
 # Data
 
-```{r,results = "hide"}
-data<-read.csv("C:/Users/dsaav/Documents/Projects/Datasets/Breast Cancer Prediction/data.csv",header = TRUE)
-sum(is.na(data$ZI))
+```{r,message = FALSE,warning = FALSE,comment=NA}
+data<-read.csv("C:/Users/dsaav/Documents/Projects/Datasets/Breast Cancer Prediction/data.csv",
+               header = TRUE)
+print(sum(is.na(data$ZI)))
 
 ```
-```{r,message = FALSE,warning = FALSE}
+
+
+```{r,message = FALSE,warning = FALSE,comment=NA}
 for (i in 1:ncol(data)){
  print(paste(colnames(data)[i],"=", sum(is.na(data[,i]))))
   }
 
 ```
 
+```{r,message = FALSE,warning = FALSE,comment=NA}
+head(data)
+
+```
+
+
 
 # Main Statistics
-```{r,message = FALSE,warning = FALSE}
+```{r,message = FALSE,warning = FALSE,comment=NA}
 summary(data)
 
 ```
@@ -97,7 +115,11 @@ str(data)
 ```
 
 
-```{r,message = FALSE,warning = FALSE}
+
+
+
+
+```{r,message = FALSE,warning = FALSE,comment=NA}
 data$diagnosis<-factor(data$diagnosis)
 
 ```
@@ -107,7 +129,7 @@ data$diagnosis<-factor(data$diagnosis)
 
 # Data Visualization
 
-```{r,message = FALSE,warning = FALSE}
+```{r,message = FALSE,warning = FALSE,comment=NA}
 library(gridExtra)
 library(stringr)
 library(ggplot2)
@@ -123,11 +145,14 @@ mulplot<-function(df,vars){
     ggplot(df, aes_string(each_variable,fill=data$diagnosis)) + # NOTE - aes_string rather than aes
       geom_density(alpha = 0.5,linetype = 1) +ggtitle(str_c(each_variable))+
       theme(text=element_text(size = 9),legend.key.size = unit(0.5, 'cm'))+
-      labs(x = " Values", y = "Density",fill='R')
+      labs(x = " Values", y = "Density",fill='RGIT')
     })
   gridExtra::grid.arrange(grobs = my_plots_list, ncol = 2,widths=c(10,10))
   }
+```
 
+
+```{r,message = FALSE,warning = FALSE,echo=FALSE}
 
 mulplot(data,colnames(data)[2:7])
 mulplot(data,colnames(data)[8:13])
@@ -136,7 +161,48 @@ mulplot(data,colnames(data)[20:25])
 mulplot(data,colnames(data)[26:31])
 
 
+```
+
+
+# Training and Testing Data
+
+```{r,message = FALSE,warning = FALSE, comment=NA}
+
+train_test<-function(df){
+  set.seed(1)
+  
+  sample <- sample(c(TRUE, FALSE), nrow(df), replace=TRUE, prob=c(0.7,0.3))
+  train  <- df[sample, ]
+  test   <- df[!sample, ]
+  results <- list(train,test)
+  return(results)
+}
+
+results=train_test(data)
+train<-results[[1]]
+test<-results[[2]]
 
 ```
 
 
+# Logistic Regression Model
+
+```{r,message = FALSE,warning = FALSE,comment=NA}
+
+
+
+library(ggplot2)
+library(dplyr)
+
+logistic<-glm(formula=diagnosis ~ ., data=train,family="binomial")
+
+
+```
+
+
+
+```{r,message = FALSE,warning = FALSE,comment=NA}
+
+summary(logistic)
+
+```
