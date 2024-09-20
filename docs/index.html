@@ -12,9 +12,9 @@
 <meta name="author" content="Armando Saavedra" />
 
 
-<title>Breast Cancer Predictive Model</title>
+<title>SQL Server Exercises</title>
 
-<script src="site_libs/header-attrs-2.20/header-attrs.js"></script>
+<script src="site_libs/header-attrs-2.25/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="site_libs/bootstrap-3.3.5/css/cosmo.min.css" rel="stylesheet" />
@@ -30,7 +30,7 @@
        h6 {font-size: 12px;}
        code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
        pre:not([class]) { background-color: white }</style>
-<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<script src="site_libs/jqueryui-1.13.2/jquery-ui.min.js"></script>
 <link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
 <script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
@@ -91,11 +91,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 }
 code span.al { color: #ef2929; } /* Alert */
 code span.an { color: #8f5902; font-weight: bold; font-style: italic; } /* Annotation */
-code span.at { color: #c4a000; } /* Attribute */
+code span.at { color: #204a87; } /* Attribute */
 code span.bn { color: #0000cf; } /* BaseN */
 code span.cf { color: #204a87; font-weight: bold; } /* ControlFlow */
 code span.ch { color: #4e9a06; } /* Char */
-code span.cn { color: #000000; } /* Constant */
+code span.cn { color: #8f5902; } /* Constant */
 code span.co { color: #8f5902; font-style: italic; } /* Comment */
 code span.cv { color: #8f5902; font-weight: bold; font-style: italic; } /* CommentVar */
 code span.do { color: #8f5902; font-weight: bold; font-style: italic; } /* Documentation */
@@ -104,14 +104,14 @@ code span.dv { color: #0000cf; } /* DecVal */
 code span.er { color: #a40000; font-weight: bold; } /* Error */
 code span.ex { } /* Extension */
 code span.fl { color: #0000cf; } /* Float */
-code span.fu { color: #000000; } /* Function */
+code span.fu { color: #204a87; font-weight: bold; } /* Function */
 code span.im { } /* Import */
 code span.in { color: #8f5902; font-weight: bold; font-style: italic; } /* Information */
 code span.kw { color: #204a87; font-weight: bold; } /* Keyword */
 code span.op { color: #ce5c00; font-weight: bold; } /* Operator */
 code span.ot { color: #8f5902; } /* Other */
 code span.pp { color: #8f5902; font-style: italic; } /* Preprocessor */
-code span.sc { color: #000000; } /* SpecialChar */
+code span.sc { color: #ce5c00; font-weight: bold; } /* SpecialChar */
 code span.ss { color: #4e9a06; } /* SpecialString */
 code span.st { color: #4e9a06; } /* String */
 code span.va { color: #000000; } /* Variable */
@@ -404,7 +404,7 @@ div.tocify {
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <a class="navbar-brand" href="index.html">Portfolio R</a>
+      <a class="navbar-brand" href="index.html">SQL</a>
     </div>
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
@@ -421,7 +421,7 @@ div.tocify {
 
 
 
-<h1 class="title toc-ignore">Breast Cancer Predictive Model</h1>
+<h1 class="title toc-ignore">SQL Server Exercises</h1>
 <h4 class="author">Armando Saavedra</h4>
 <h4 class="date">3/22/2020</h4>
 
@@ -467,266 +467,473 @@ p{
 </style>
 <div id="introduction" class="section level1">
 <h1>Introduction</h1>
-<p>The goal of this project is to analyze spatial data summarizing the
-number of acidents in New york. The objective is to create a heat map
-where every zip code shows the number of car accidents.</p>
-<p>The information base of this analysis comes from a dataset found in
-Kaggle that provides differents</p>
+<p>The purpose of this project is to provide an example where data from
+SQL Server is linked to RStudio environment. There are situation where R
+users does not feel confortable working with SQL. To facilitated this
+problem R has different solutions to amelianate this inconvenience. On
+of this is to stablish a connection to SQL data provider, in this case
+SQL Server, and access the different tables included in the schema of
+the database.</p>
 </div>
-<div id="data" class="section level1">
-<h1>Data</h1>
-<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>data<span class="ot">&lt;-</span><span class="fu">read.csv</span>(<span class="st">&quot;C:/Users/dsaav/Documents/Projects/Datasets/Breast Cancer Prediction/data.csv&quot;</span>,</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>               <span class="at">header =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="fu">sum</span>(<span class="fu">is.na</span>(data<span class="sc">$</span>ZI)))</span></code></pre></div>
-<pre><code>[1] 0</code></pre>
-<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">ncol</span>(data)){</span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a> <span class="fu">print</span>(<span class="fu">paste</span>(<span class="fu">colnames</span>(data)[i],<span class="st">&quot;=&quot;</span>, <span class="fu">sum</span>(<span class="fu">is.na</span>(data[,i]))))</span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  }</span></code></pre></div>
-<pre><code>[1] &quot;diagnosis = 0&quot;
-[1] &quot;radius_mean = 0&quot;
-[1] &quot;texture_mean = 0&quot;
-[1] &quot;perimeter_mean = 0&quot;
-[1] &quot;area_mean = 0&quot;
-[1] &quot;smoothness_mean = 0&quot;
-[1] &quot;compactness_mean = 0&quot;
-[1] &quot;concavity_mean = 0&quot;
-[1] &quot;concave.points_mean = 0&quot;
-[1] &quot;symmetry_mean = 0&quot;
-[1] &quot;fractal_dimension_mean = 0&quot;
-[1] &quot;radius_se = 0&quot;
-[1] &quot;texture_se = 0&quot;
-[1] &quot;perimeter_se = 0&quot;
-[1] &quot;area_se = 0&quot;
-[1] &quot;smoothness_se = 0&quot;
-[1] &quot;compactness_se = 0&quot;
-[1] &quot;concavity_se = 0&quot;
-[1] &quot;concave.points_se = 0&quot;
-[1] &quot;symmetry_se = 0&quot;
-[1] &quot;fractal_dimension_se = 0&quot;
-[1] &quot;radius_worst = 0&quot;
-[1] &quot;texture_worst = 0&quot;
-[1] &quot;perimeter_worst = 0&quot;
-[1] &quot;area_worst = 0&quot;
-[1] &quot;smoothness_worst = 0&quot;
-[1] &quot;compactness_worst = 0&quot;
-[1] &quot;concavity_worst = 0&quot;
-[1] &quot;concave.points_worst = 0&quot;
-[1] &quot;symmetry_worst = 0&quot;
-[1] &quot;fractal_dimension_worst = 0&quot;</code></pre>
-<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(data)</span></code></pre></div>
-<pre><code>  diagnosis radius_mean texture_mean perimeter_mean area_mean smoothness_mean compactness_mean concavity_mean
-1         1       17.99        10.38         122.80    1001.0         0.11840          0.27760         0.3001
-2         1       20.57        17.77         132.90    1326.0         0.08474          0.07864         0.0869
-3         1       19.69        21.25         130.00    1203.0         0.10960          0.15990         0.1974
-4         1       11.42        20.38          77.58     386.1         0.14250          0.28390         0.2414
-5         1       20.29        14.34         135.10    1297.0         0.10030          0.13280         0.1980
-6         1       12.45        15.70          82.57     477.1         0.12780          0.17000         0.1578
-  concave.points_mean symmetry_mean fractal_dimension_mean radius_se texture_se perimeter_se area_se
-1             0.14710        0.2419                0.07871    1.0950     0.9053        8.589  153.40
-2             0.07017        0.1812                0.05667    0.5435     0.7339        3.398   74.08
-3             0.12790        0.2069                0.05999    0.7456     0.7869        4.585   94.03
-4             0.10520        0.2597                0.09744    0.4956     1.1560        3.445   27.23
-5             0.10430        0.1809                0.05883    0.7572     0.7813        5.438   94.44
-6             0.08089        0.2087                0.07613    0.3345     0.8902        2.217   27.19
-  smoothness_se compactness_se concavity_se concave.points_se symmetry_se fractal_dimension_se radius_worst
-1      0.006399        0.04904      0.05373           0.01587     0.03003             0.006193        25.38
-2      0.005225        0.01308      0.01860           0.01340     0.01389             0.003532        24.99
-3      0.006150        0.04006      0.03832           0.02058     0.02250             0.004571        23.57
-4      0.009110        0.07458      0.05661           0.01867     0.05963             0.009208        14.91
-5      0.011490        0.02461      0.05688           0.01885     0.01756             0.005115        22.54
-6      0.007510        0.03345      0.03672           0.01137     0.02165             0.005082        15.47
-  texture_worst perimeter_worst area_worst smoothness_worst compactness_worst concavity_worst
-1         17.33          184.60     2019.0           0.1622            0.6656          0.7119
-2         23.41          158.80     1956.0           0.1238            0.1866          0.2416
-3         25.53          152.50     1709.0           0.1444            0.4245          0.4504
-4         26.50           98.87      567.7           0.2098            0.8663          0.6869
-5         16.67          152.20     1575.0           0.1374            0.2050          0.4000
-6         23.75          103.40      741.6           0.1791            0.5249          0.5355
-  concave.points_worst symmetry_worst fractal_dimension_worst
-1               0.2654         0.4601                 0.11890
-2               0.1860         0.2750                 0.08902
-3               0.2430         0.3613                 0.08758
-4               0.2575         0.6638                 0.17300
-5               0.1625         0.2364                 0.07678
-6               0.1741         0.3985                 0.12440</code></pre>
+<div id="data-source" class="section level1">
+<h1>Data Source</h1>
+<p>The data used for the porpose of this project comes from a blog
+located in github called <a
+href="https://ozencb.github.io/postgresql-exercises/">PostgreSQL
+Exercises</a>. The same way, some of the exercises exposed here comes
+from the same source.</p>
 </div>
-<div id="main-statistics" class="section level1">
-<h1>Main Statistics</h1>
-<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(data)</span></code></pre></div>
-<pre><code>   diagnosis       radius_mean      texture_mean   perimeter_mean     area_mean      smoothness_mean  
- Min.   :0.0000   Min.   : 6.981   Min.   : 9.71   Min.   : 43.79   Min.   : 143.5   Min.   :0.05263  
- 1st Qu.:0.0000   1st Qu.:11.700   1st Qu.:16.17   1st Qu.: 75.17   1st Qu.: 420.3   1st Qu.:0.08637  
- Median :0.0000   Median :13.370   Median :18.84   Median : 86.24   Median : 551.1   Median :0.09587  
- Mean   :0.3726   Mean   :14.127   Mean   :19.29   Mean   : 91.97   Mean   : 654.9   Mean   :0.09636  
- 3rd Qu.:1.0000   3rd Qu.:15.780   3rd Qu.:21.80   3rd Qu.:104.10   3rd Qu.: 782.7   3rd Qu.:0.10530  
- Max.   :1.0000   Max.   :28.110   Max.   :39.28   Max.   :188.50   Max.   :2501.0   Max.   :0.16340  
- compactness_mean  concavity_mean    concave.points_mean symmetry_mean    fractal_dimension_mean
- Min.   :0.01938   Min.   :0.00000   Min.   :0.00000     Min.   :0.1060   Min.   :0.04996       
- 1st Qu.:0.06492   1st Qu.:0.02956   1st Qu.:0.02031     1st Qu.:0.1619   1st Qu.:0.05770       
- Median :0.09263   Median :0.06154   Median :0.03350     Median :0.1792   Median :0.06154       
- Mean   :0.10434   Mean   :0.08880   Mean   :0.04892     Mean   :0.1812   Mean   :0.06280       
- 3rd Qu.:0.13040   3rd Qu.:0.13070   3rd Qu.:0.07400     3rd Qu.:0.1957   3rd Qu.:0.06612       
- Max.   :0.34540   Max.   :0.42680   Max.   :0.20120     Max.   :0.3040   Max.   :0.09744       
-   radius_se        texture_se      perimeter_se       area_se        smoothness_se      compactness_se    
- Min.   :0.1115   Min.   :0.3602   Min.   : 0.757   Min.   :  6.802   Min.   :0.001713   Min.   :0.002252  
- 1st Qu.:0.2324   1st Qu.:0.8339   1st Qu.: 1.606   1st Qu.: 17.850   1st Qu.:0.005169   1st Qu.:0.013080  
- Median :0.3242   Median :1.1080   Median : 2.287   Median : 24.530   Median :0.006380   Median :0.020450  
- Mean   :0.4052   Mean   :1.2169   Mean   : 2.866   Mean   : 40.337   Mean   :0.007041   Mean   :0.025478  
- 3rd Qu.:0.4789   3rd Qu.:1.4740   3rd Qu.: 3.357   3rd Qu.: 45.190   3rd Qu.:0.008146   3rd Qu.:0.032450  
- Max.   :2.8730   Max.   :4.8850   Max.   :21.980   Max.   :542.200   Max.   :0.031130   Max.   :0.135400  
-  concavity_se     concave.points_se   symmetry_se       fractal_dimension_se  radius_worst   texture_worst  
- Min.   :0.00000   Min.   :0.000000   Min.   :0.007882   Min.   :0.0008948    Min.   : 7.93   Min.   :12.02  
- 1st Qu.:0.01509   1st Qu.:0.007638   1st Qu.:0.015160   1st Qu.:0.0022480    1st Qu.:13.01   1st Qu.:21.08  
- Median :0.02589   Median :0.010930   Median :0.018730   Median :0.0031870    Median :14.97   Median :25.41  
- Mean   :0.03189   Mean   :0.011796   Mean   :0.020542   Mean   :0.0037949    Mean   :16.27   Mean   :25.68  
- 3rd Qu.:0.04205   3rd Qu.:0.014710   3rd Qu.:0.023480   3rd Qu.:0.0045580    3rd Qu.:18.79   3rd Qu.:29.72  
- Max.   :0.39600   Max.   :0.052790   Max.   :0.078950   Max.   :0.0298400    Max.   :36.04   Max.   :49.54  
- perimeter_worst    area_worst     smoothness_worst  compactness_worst concavity_worst  concave.points_worst
- Min.   : 50.41   Min.   : 185.2   Min.   :0.07117   Min.   :0.02729   Min.   :0.0000   Min.   :0.00000     
- 1st Qu.: 84.11   1st Qu.: 515.3   1st Qu.:0.11660   1st Qu.:0.14720   1st Qu.:0.1145   1st Qu.:0.06493     
- Median : 97.66   Median : 686.5   Median :0.13130   Median :0.21190   Median :0.2267   Median :0.09993     
- Mean   :107.26   Mean   : 880.6   Mean   :0.13237   Mean   :0.25427   Mean   :0.2722   Mean   :0.11461     
- 3rd Qu.:125.40   3rd Qu.:1084.0   3rd Qu.:0.14600   3rd Qu.:0.33910   3rd Qu.:0.3829   3rd Qu.:0.16140     
- Max.   :251.20   Max.   :4254.0   Max.   :0.22260   Max.   :1.05800   Max.   :1.2520   Max.   :0.29100     
- symmetry_worst   fractal_dimension_worst
- Min.   :0.1565   Min.   :0.05504        
- 1st Qu.:0.2504   1st Qu.:0.07146        
- Median :0.2822   Median :0.08004        
- Mean   :0.2901   Mean   :0.08395        
- 3rd Qu.:0.3179   3rd Qu.:0.09208        
- Max.   :0.6638   Max.   :0.20750        </code></pre>
-<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">dim</span>(data)</span></code></pre></div>
-<pre><code>## [1] 569  31</code></pre>
-<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(data)</span></code></pre></div>
-<pre><code>## &#39;data.frame&#39;:    569 obs. of  31 variables:
-##  $ diagnosis              : int  1 1 1 1 1 1 1 1 1 1 ...
-##  $ radius_mean            : num  18 20.6 19.7 11.4 20.3 ...
-##  $ texture_mean           : num  10.4 17.8 21.2 20.4 14.3 ...
-##  $ perimeter_mean         : num  122.8 132.9 130 77.6 135.1 ...
-##  $ area_mean              : num  1001 1326 1203 386 1297 ...
-##  $ smoothness_mean        : num  0.1184 0.0847 0.1096 0.1425 0.1003 ...
-##  $ compactness_mean       : num  0.2776 0.0786 0.1599 0.2839 0.1328 ...
-##  $ concavity_mean         : num  0.3001 0.0869 0.1974 0.2414 0.198 ...
-##  $ concave.points_mean    : num  0.1471 0.0702 0.1279 0.1052 0.1043 ...
-##  $ symmetry_mean          : num  0.242 0.181 0.207 0.26 0.181 ...
-##  $ fractal_dimension_mean : num  0.0787 0.0567 0.06 0.0974 0.0588 ...
-##  $ radius_se              : num  1.095 0.543 0.746 0.496 0.757 ...
-##  $ texture_se             : num  0.905 0.734 0.787 1.156 0.781 ...
-##  $ perimeter_se           : num  8.59 3.4 4.58 3.44 5.44 ...
-##  $ area_se                : num  153.4 74.1 94 27.2 94.4 ...
-##  $ smoothness_se          : num  0.0064 0.00522 0.00615 0.00911 0.01149 ...
-##  $ compactness_se         : num  0.049 0.0131 0.0401 0.0746 0.0246 ...
-##  $ concavity_se           : num  0.0537 0.0186 0.0383 0.0566 0.0569 ...
-##  $ concave.points_se      : num  0.0159 0.0134 0.0206 0.0187 0.0188 ...
-##  $ symmetry_se            : num  0.03 0.0139 0.0225 0.0596 0.0176 ...
-##  $ fractal_dimension_se   : num  0.00619 0.00353 0.00457 0.00921 0.00511 ...
-##  $ radius_worst           : num  25.4 25 23.6 14.9 22.5 ...
-##  $ texture_worst          : num  17.3 23.4 25.5 26.5 16.7 ...
-##  $ perimeter_worst        : num  184.6 158.8 152.5 98.9 152.2 ...
-##  $ area_worst             : num  2019 1956 1709 568 1575 ...
-##  $ smoothness_worst       : num  0.162 0.124 0.144 0.21 0.137 ...
-##  $ compactness_worst      : num  0.666 0.187 0.424 0.866 0.205 ...
-##  $ concavity_worst        : num  0.712 0.242 0.45 0.687 0.4 ...
-##  $ concave.points_worst   : num  0.265 0.186 0.243 0.258 0.163 ...
-##  $ symmetry_worst         : num  0.46 0.275 0.361 0.664 0.236 ...
-##  $ fractal_dimension_worst: num  0.1189 0.089 0.0876 0.173 0.0768 ...</code></pre>
-<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>data<span class="sc">$</span>diagnosis<span class="ot">&lt;-</span><span class="fu">factor</span>(data<span class="sc">$</span>diagnosis)</span></code></pre></div>
+<div id="connection" class="section level1">
+<h1>Connection</h1>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="co"># Establish connection to SQL Server</span></span>
+<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a>con <span class="ot">&lt;-</span> <span class="fu">dbConnect</span>(odbc<span class="sc">::</span><span class="fu">odbc</span>(),</span>
+<span id="cb1-3"><a href="#cb1-3" tabindex="-1"></a>                 <span class="at">Driver =</span> <span class="st">&quot;SQL Server&quot;</span>,          <span class="co"># Or &quot;ODBC Driver 17 for SQL Server&quot;</span></span>
+<span id="cb1-4"><a href="#cb1-4" tabindex="-1"></a>                 <span class="at">Server =</span> <span class="st">&quot;Armando</span><span class="sc">\\</span><span class="st">SQLEXPRESS&quot;</span>,    <span class="co"># Replace with your server name</span></span>
+<span id="cb1-5"><a href="#cb1-5" tabindex="-1"></a>                 <span class="at">Database =</span> <span class="st">&quot;Booking&quot;</span>,            <span class="co"># Replace with your database name</span></span>
+<span id="cb1-6"><a href="#cb1-6" tabindex="-1"></a>                 <span class="at">Trusted_connection=</span><span class="st">&quot;True&quot;</span></span>
+<span id="cb1-7"><a href="#cb1-7" tabindex="-1"></a>)</span></code></pre></div>
 </div>
-<div id="data-visualization" class="section level1">
-<h1>Data Visualization</h1>
-<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(gridExtra)</span>
-<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(stringr)</span>
-<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
-<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Assign the columns of interest to a variable</span></span>
-<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a><span class="co">#target_variables &lt;- colnames(data)[2:7]</span></span>
-<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a>mulplot<span class="ot">&lt;-</span><span class="cf">function</span>(df,vars){</span>
-<span id="cb14-12"><a href="#cb14-12" aria-hidden="true" tabindex="-1"></a>  my_plots_list <span class="ot">&lt;-</span><span class="fu">lapply</span>(vars, <span class="cf">function</span>(each_variable) {</span>
-<span id="cb14-13"><a href="#cb14-13" aria-hidden="true" tabindex="-1"></a>    <span class="fu">ggplot</span>(df, <span class="fu">aes_string</span>(each_variable,<span class="at">fill=</span>data<span class="sc">$</span>diagnosis)) <span class="sc">+</span> <span class="co"># </span><span class="al">NOTE</span><span class="co"> - aes_string rather than aes</span></span>
-<span id="cb14-14"><a href="#cb14-14" aria-hidden="true" tabindex="-1"></a>      <span class="fu">geom_density</span>(<span class="at">alpha =</span> <span class="fl">0.5</span>,<span class="at">linetype =</span> <span class="dv">1</span>) <span class="sc">+</span><span class="fu">ggtitle</span>(<span class="fu">str_c</span>(each_variable))<span class="sc">+</span></span>
-<span id="cb14-15"><a href="#cb14-15" aria-hidden="true" tabindex="-1"></a>      <span class="fu">theme</span>(<span class="at">text=</span><span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">9</span>),<span class="at">legend.key.size =</span> <span class="fu">unit</span>(<span class="fl">0.5</span>, <span class="st">&#39;cm&#39;</span>))<span class="sc">+</span></span>
-<span id="cb14-16"><a href="#cb14-16" aria-hidden="true" tabindex="-1"></a>      <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">&quot; Values&quot;</span>, <span class="at">y =</span> <span class="st">&quot;Density&quot;</span>,<span class="at">fill=</span><span class="st">&#39;RGIT&#39;</span>)</span>
-<span id="cb14-17"><a href="#cb14-17" aria-hidden="true" tabindex="-1"></a>    })</span>
-<span id="cb14-18"><a href="#cb14-18" aria-hidden="true" tabindex="-1"></a>  gridExtra<span class="sc">::</span><span class="fu">grid.arrange</span>(<span class="at">grobs =</span> my_plots_list, <span class="at">ncol =</span> <span class="dv">2</span>,<span class="at">widths=</span><span class="fu">c</span>(<span class="dv">10</span>,<span class="dv">10</span>))</span>
-<span id="cb14-19"><a href="#cb14-19" aria-hidden="true" tabindex="-1"></a>  }</span></code></pre></div>
-<p><img src="index_files/figure-html/unnamed-chunk-29-1.png" width="672" /><img src="index_files/figure-html/unnamed-chunk-29-2.png" width="672" /><img src="index_files/figure-html/unnamed-chunk-29-3.png" width="672" /><img src="index_files/figure-html/unnamed-chunk-29-4.png" width="672" /><img src="index_files/figure-html/unnamed-chunk-29-5.png" width="672" /></p>
+<div id="data-extraction" class="section level1">
+<h1>Data extraction</h1>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a>bookings<span class="ot">&lt;-</span><span class="fu">tbl</span>(con,<span class="fu">in_schema</span>(<span class="st">&quot;cd&quot;</span>,<span class="st">&quot;Bookings&quot;</span>))<span class="sc">%&gt;%</span></span>
+<span id="cb2-2"><a href="#cb2-2" tabindex="-1"></a>  <span class="fu">collect</span>()</span>
+<span id="cb2-3"><a href="#cb2-3" tabindex="-1"></a></span>
+<span id="cb2-4"><a href="#cb2-4" tabindex="-1"></a>members<span class="ot">&lt;-</span><span class="fu">tbl</span>(con,<span class="fu">in_schema</span>(<span class="st">&quot;cd&quot;</span>,<span class="st">&quot;members&quot;</span>))<span class="sc">%&gt;%</span></span>
+<span id="cb2-5"><a href="#cb2-5" tabindex="-1"></a>  <span class="fu">collect</span>()</span>
+<span id="cb2-6"><a href="#cb2-6" tabindex="-1"></a></span>
+<span id="cb2-7"><a href="#cb2-7" tabindex="-1"></a>facilities<span class="ot">&lt;-</span><span class="fu">tbl</span>(con,<span class="fu">in_schema</span>(<span class="st">&quot;cd&quot;</span>,<span class="st">&quot;facilities&quot;</span>))<span class="sc">%&gt;%</span></span>
+<span id="cb2-8"><a href="#cb2-8" tabindex="-1"></a>  <span class="fu">collect</span>()</span></code></pre></div>
 </div>
-<div id="training-and-testing-data" class="section level1">
-<h1>Training and Testing Data</h1>
-<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>train_test<span class="ot">&lt;-</span><span class="cf">function</span>(df){</span>
-<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set.seed</span>(<span class="dv">1</span>)</span>
-<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>  sample <span class="ot">&lt;-</span> <span class="fu">sample</span>(<span class="fu">c</span>(<span class="cn">TRUE</span>, <span class="cn">FALSE</span>), <span class="fu">nrow</span>(df), <span class="at">replace=</span><span class="cn">TRUE</span>, <span class="at">prob=</span><span class="fu">c</span>(<span class="fl">0.7</span>,<span class="fl">0.3</span>))</span>
-<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>  train  <span class="ot">&lt;-</span> df[sample, ]</span>
-<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>  test   <span class="ot">&lt;-</span> df[<span class="sc">!</span>sample, ]</span>
-<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>  results <span class="ot">&lt;-</span> <span class="fu">list</span>(train,test)</span>
-<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(results)</span>
-<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a>results<span class="ot">=</span><span class="fu">train_test</span>(data)</span>
-<span id="cb15-12"><a href="#cb15-12" aria-hidden="true" tabindex="-1"></a>train<span class="ot">&lt;-</span>results[[<span class="dv">1</span>]]</span>
-<span id="cb15-13"><a href="#cb15-13" aria-hidden="true" tabindex="-1"></a>test<span class="ot">&lt;-</span>results[[<span class="dv">2</span>]]</span></code></pre></div>
+<div id="exercises" class="section level1">
+<h1>Exercises</h1>
+<div id="where-statement" class="section level3">
+<h3>Where Statement</h3>
+<p>Produce a list of facilities that charge a fee to members and that
+fee is less thatn 150 of the monthly maintance cost.</p>
+<div class="sourceCode" id="cb3"><pre
+class="sourceCode sql"><code class="sourceCode sql"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a><span class="kw">SELECT</span> name, membercost, monthlymaintenance </span>
+<span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a><span class="kw">FROM</span> cd.facilities</span>
+<span id="cb3-3"><a href="#cb3-3" tabindex="-1"></a><span class="kw">WHERE</span> membercost<span class="op">&gt;</span><span class="dv">0</span> <span class="kw">AND</span></span>
+<span id="cb3-4"><a href="#cb3-4" tabindex="-1"></a>      (membercost<span class="op">&lt;</span>monthlymaintenance<span class="op">/</span><span class="dv">50</span>)</span></code></pre></div>
+<table>
+<thead>
+<tr class="header">
+<th align="left">name</th>
+<th align="right">membercost</th>
+<th align="right">monthlymaintenance</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Massage Room 1</td>
+<td align="right">35</td>
+<td align="right">3000</td>
+</tr>
+<tr class="even">
+<td align="left">Massage Room 2</td>
+<td align="right">35</td>
+<td align="right">3000</td>
+</tr>
+</tbody>
+</table>
 </div>
-<div id="logistic-regression-model" class="section level1">
-<h1>Logistic Regression Model</h1>
-<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
-<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
-<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>logistic<span class="ot">&lt;-</span><span class="fu">glm</span>(<span class="at">formula=</span>diagnosis <span class="sc">~</span> ., <span class="at">data=</span>train,<span class="at">family=</span><span class="st">&quot;binomial&quot;</span>)</span></code></pre></div>
-<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(logistic)</span></code></pre></div>
-<pre><code>
-Call:
-glm(formula = diagnosis ~ ., family = &quot;binomial&quot;, data = train)
-
-Deviance Residuals: 
-       Min          1Q      Median          3Q         Max  
--1.562e-04  -2.100e-08  -2.100e-08   2.100e-08   2.082e-04  
-
-Coefficients:
-                          Estimate Std. Error z value Pr(&gt;|z|)
-(Intercept)             -2.769e+03  1.333e+06  -0.002    0.998
-radius_mean             -6.129e+02  1.792e+05  -0.003    0.997
-texture_mean            -1.033e+01  1.817e+04  -0.001    1.000
-perimeter_mean           9.301e+01  3.949e+04   0.002    0.998
-area_mean               -4.555e-02  1.344e+03   0.000    1.000
-smoothness_mean         -2.090e+03  3.667e+06  -0.001    1.000
-compactness_mean        -4.329e+03  1.342e+06  -0.003    0.997
-concavity_mean          -2.431e+03  2.714e+06  -0.001    0.999
-concave.points_mean      5.377e+03  5.447e+06   0.001    0.999
-symmetry_mean           -2.639e+02  7.108e+05   0.000    1.000
-fractal_dimension_mean   2.684e+03  1.799e+07   0.000    1.000
-radius_se                1.376e+03  1.269e+06   0.001    0.999
-texture_se               4.405e+01  6.046e+04   0.001    0.999
-perimeter_se            -1.456e+02  7.731e+04  -0.002    0.998
-area_se                 -8.159e-01  8.983e+03   0.000    1.000
-smoothness_se           -1.072e+04  2.885e+07   0.000    1.000
-compactness_se          -8.219e+03  9.777e+06  -0.001    0.999
-concavity_se             1.409e+02  2.317e+06   0.000    1.000
-concave.points_se        3.595e+04  1.971e+07   0.002    0.999
-symmetry_se              3.044e+02  5.841e+06   0.000    1.000
-fractal_dimension_se    -3.789e+04  3.490e+07  -0.001    0.999
-radius_worst            -5.313e+01  2.307e+05   0.000    1.000
-texture_worst            1.562e+01  1.466e+04   0.001    0.999
-perimeter_worst          3.458e+01  1.745e+04   0.002    0.998
-area_worst              -1.117e+00  1.354e+03  -0.001    0.999
-smoothness_worst         4.146e+03  2.702e+06   0.002    0.999
-compactness_worst       -4.934e+02  5.660e+05  -0.001    0.999
-concavity_worst          1.087e+03  5.958e+05   0.002    0.999
-concave.points_worst    -3.355e+03  2.790e+06  -0.001    0.999
-symmetry_worst           3.068e+02  6.047e+05   0.001    1.000
-fractal_dimension_worst  7.661e+03  7.809e+06   0.001    0.999
-
-(Dispersion parameter for binomial family taken to be 1)
-
-    Null deviance: 5.3019e+02  on 400  degrees of freedom
-Residual deviance: 2.5460e-07  on 370  degrees of freedom
-AIC: 62
-
-Number of Fisher Scoring iterations: 25</code></pre>
+<div id="case-when-statement" class="section level3">
+<h3>Case when Statement</h3>
+<p>Create a new field that list facilities as cheap and expensive. To do
+that use $100 as criteria.</p>
+<div class="sourceCode" id="cb4"><pre
+class="sourceCode sql"><code class="sourceCode sql"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a><span class="kw">SELECT</span> name, </span>
+<span id="cb4-2"><a href="#cb4-2" tabindex="-1"></a>         <span class="cf">CASE</span> <span class="cf">WHEN</span> (monthlymaintenance <span class="op">&gt;</span> <span class="dv">100</span>) <span class="cf">THEN</span> <span class="st">&#39;expensive&#39;</span></span>
+<span id="cb4-3"><a href="#cb4-3" tabindex="-1"></a>         <span class="cf">ELSE</span> <span class="st">&#39;cheap&#39;</span></span>
+<span id="cb4-4"><a href="#cb4-4" tabindex="-1"></a>         <span class="cf">END</span> <span class="kw">AS</span> <span class="kw">cost</span></span>
+<span id="cb4-5"><a href="#cb4-5" tabindex="-1"></a><span class="kw">FROM</span> cd.facilities;    </span></code></pre></div>
+<table>
+<thead>
+<tr class="header">
+<th align="left">name</th>
+<th align="left">cost</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Tennis Court 1</td>
+<td align="left">expensive</td>
+</tr>
+<tr class="even">
+<td align="left">Tennis Court 2</td>
+<td align="left">expensive</td>
+</tr>
+<tr class="odd">
+<td align="left">Badminton Court</td>
+<td align="left">cheap</td>
+</tr>
+<tr class="even">
+<td align="left">Table Tennis</td>
+<td align="left">cheap</td>
+</tr>
+<tr class="odd">
+<td align="left">Massage Room 1</td>
+<td align="left">expensive</td>
+</tr>
+<tr class="even">
+<td align="left">Massage Room 2</td>
+<td align="left">expensive</td>
+</tr>
+<tr class="odd">
+<td align="left">Squash Court</td>
+<td align="left">cheap</td>
+</tr>
+<tr class="even">
+<td align="left">Snooker Table</td>
+<td align="left">cheap</td>
+</tr>
+<tr class="odd">
+<td align="left">Pool Table</td>
+<td align="left">cheap</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="filter-dates" class="section level3">
+<h3>Filter Dates</h3>
+<p>Identify the name and last name fo the members who joined after June
+2012.</p>
+<div class="sourceCode" id="cb5"><pre
+class="sourceCode sql"><code class="sourceCode sql"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a><span class="kw">select</span> surname, firstname, joindate </span>
+<span id="cb5-2"><a href="#cb5-2" tabindex="-1"></a><span class="kw">from</span> cd.members</span>
+<span id="cb5-3"><a href="#cb5-3" tabindex="-1"></a><span class="kw">where</span> joindate<span class="op">&gt;=</span><span class="st">&#39;2012-06-01&#39;</span> </span></code></pre></div>
+<table>
+<thead>
+<tr class="header">
+<th align="left">surname</th>
+<th align="left">firstname</th>
+<th align="left">joindate</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">GUEST</td>
+<td align="left">GUEST</td>
+<td align="left">2012-07-01 00:00:00</td>
+</tr>
+<tr class="even">
+<td align="left">Smith</td>
+<td align="left">Darren</td>
+<td align="left">2012-07-02 12:02:05</td>
+</tr>
+<tr class="odd">
+<td align="left">Smith</td>
+<td align="left">Tracy</td>
+<td align="left">2012-07-02 12:08:23</td>
+</tr>
+<tr class="even">
+<td align="left">Rownam</td>
+<td align="left">Tim</td>
+<td align="left">2012-07-03 09:32:15</td>
+</tr>
+<tr class="odd">
+<td align="left">Joplette</td>
+<td align="left">Janice</td>
+<td align="left">2012-07-03 10:25:05</td>
+</tr>
+<tr class="even">
+<td align="left">Butters</td>
+<td align="left">Gerald</td>
+<td align="left">2012-07-09 10:44:09</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="subquery" class="section level3">
+<h3>Subquery</h3>
+<p>Get the first and last name of the last member who signed up.</p>
+<div class="sourceCode" id="cb6"><pre
+class="sourceCode sql"><code class="sourceCode sql"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a><span class="kw">SELECT</span> firstname, surname, joindate</span>
+<span id="cb6-2"><a href="#cb6-2" tabindex="-1"></a><span class="kw">FROM</span> cd.members</span>
+<span id="cb6-3"><a href="#cb6-3" tabindex="-1"></a><span class="kw">WHERE</span> joindate <span class="op">=</span> (<span class="kw">SELECT</span> <span class="fu">max</span>(joindate) </span>
+<span id="cb6-4"><a href="#cb6-4" tabindex="-1"></a>                        <span class="kw">FROM</span> cd.members);  </span>
+<span id="cb6-5"><a href="#cb6-5" tabindex="-1"></a>         </span></code></pre></div>
+<table>
+<thead>
+<tr class="header">
+<th align="left">firstname</th>
+<th align="left">surname</th>
+<th align="left">joindate</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Darren</td>
+<td align="left">Smith</td>
+<td align="left">2012-09-26 18:08:45</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="inner-join" class="section level3">
+<h3>Inner Join</h3>
+<ul>
+<li>Get the list of the first six records of the start times for
+bookings for the member named David</li>
+</ul>
+<div class="sourceCode" id="cb7"><pre
+class="sourceCode sql"><code class="sourceCode sql"><span id="cb7-1"><a href="#cb7-1" tabindex="-1"></a><span class="kw">SELECT</span> B.firstname,B.surname,A.starttime </span>
+<span id="cb7-2"><a href="#cb7-2" tabindex="-1"></a><span class="kw">FROM</span> cd.bookings <span class="kw">AS</span> A</span>
+<span id="cb7-3"><a href="#cb7-3" tabindex="-1"></a><span class="kw">INNER</span> <span class="kw">JOIN</span> cd.members <span class="kw">AS</span> B</span>
+<span id="cb7-4"><a href="#cb7-4" tabindex="-1"></a> <span class="kw">ON</span> B.memid <span class="op">=</span> A.memid</span>
+<span id="cb7-5"><a href="#cb7-5" tabindex="-1"></a><span class="kw">WHERE</span> B.firstname <span class="op">=</span> <span class="st">&#39;David&#39;</span> <span class="kw">AND</span> </span>
+<span id="cb7-6"><a href="#cb7-6" tabindex="-1"></a>      B.surname<span class="op">=</span><span class="st">&#39;Farrell&#39;</span></span></code></pre></div>
+<table>
+<thead>
+<tr class="header">
+<th align="left">firstname</th>
+<th align="left">surname</th>
+<th align="left">starttime</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">David</td>
+<td align="left">Farrell</td>
+<td align="left">2012-09-18 09:00:00</td>
+</tr>
+<tr class="even">
+<td align="left">David</td>
+<td align="left">Farrell</td>
+<td align="left">2012-09-18 17:30:00</td>
+</tr>
+<tr class="odd">
+<td align="left">David</td>
+<td align="left">Farrell</td>
+<td align="left">2012-09-18 13:30:00</td>
+</tr>
+<tr class="even">
+<td align="left">David</td>
+<td align="left">Farrell</td>
+<td align="left">2012-09-18 20:00:00</td>
+</tr>
+<tr class="odd">
+<td align="left">David</td>
+<td align="left">Farrell</td>
+<td align="left">2012-09-19 09:30:00</td>
+</tr>
+<tr class="even">
+<td align="left">David</td>
+<td align="left">Farrell</td>
+<td align="left">2012-09-19 15:00:00</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="left-join" class="section level3">
+<h3>Left Join</h3>
+<p>List all members and includes those who recommended them. Order by
+surname and firstname</p>
+<div class="sourceCode" id="cb8"><pre
+class="sourceCode sql"><code class="sourceCode sql"><span id="cb8-1"><a href="#cb8-1" tabindex="-1"></a><span class="kw">SELECT</span> A.firstname <span class="kw">as</span> memfname, A.surname <span class="kw">as</span> memsname, B.firstname <span class="kw">as</span> recfname,                       B.surname <span class="kw">as</span> recsname</span>
+<span id="cb8-2"><a href="#cb8-2" tabindex="-1"></a><span class="kw">FROM</span> cd.members <span class="kw">AS</span> A</span>
+<span id="cb8-3"><a href="#cb8-3" tabindex="-1"></a><span class="kw">LEFT</span> <span class="kw">OUTER</span> <span class="kw">JOIN</span> cd.members <span class="kw">AS</span> B</span>
+<span id="cb8-4"><a href="#cb8-4" tabindex="-1"></a> <span class="kw">ON</span> B.memid <span class="op">=</span> A.recommendedby</span>
+<span id="cb8-5"><a href="#cb8-5" tabindex="-1"></a><span class="kw">ORDER</span> <span class="kw">BY</span> memsname, memfname;  </span></code></pre></div>
+<table>
+<thead>
+<tr class="header">
+<th align="left">memfname</th>
+<th align="left">memsname</th>
+<th align="left">recfname</th>
+<th align="left">recsname</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Florence</td>
+<td align="left">Bader</td>
+<td align="left">Ponder</td>
+<td align="left">Stibbons</td>
+</tr>
+<tr class="even">
+<td align="left">Anne</td>
+<td align="left">Baker</td>
+<td align="left">Ponder</td>
+<td align="left">Stibbons</td>
+</tr>
+<tr class="odd">
+<td align="left">Timothy</td>
+<td align="left">Baker</td>
+<td align="left">Jemima</td>
+<td align="left">Farrell</td>
+</tr>
+<tr class="even">
+<td align="left">Tim</td>
+<td align="left">Boothe</td>
+<td align="left">Tim</td>
+<td align="left">Rownam</td>
+</tr>
+<tr class="odd">
+<td align="left">Gerald</td>
+<td align="left">Butters</td>
+<td align="left">Darren</td>
+<td align="left">Smith</td>
+</tr>
+<tr class="even">
+<td align="left">Joan</td>
+<td align="left">Coplin</td>
+<td align="left">Timothy</td>
+<td align="left">Baker</td>
+</tr>
+<tr class="odd">
+<td align="left">Erica</td>
+<td align="left">Crumpet</td>
+<td align="left">Tracy</td>
+<td align="left">Smith</td>
+</tr>
+<tr class="even">
+<td align="left">Nancy</td>
+<td align="left">Dare</td>
+<td align="left">Janice</td>
+<td align="left">Joplette</td>
+</tr>
+<tr class="odd">
+<td align="left">David</td>
+<td align="left">Farrell</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+</tr>
+<tr class="even">
+<td align="left">Jemima</td>
+<td align="left">Farrell</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+</tr>
+<tr class="odd">
+<td align="left">Matthew</td>
+<td align="left">Genting</td>
+<td align="left">Gerald</td>
+<td align="left">Butters</td>
+</tr>
+<tr class="even">
+<td align="left">GUEST</td>
+<td align="left">GUEST</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+</tr>
+<tr class="odd">
+<td align="left">John</td>
+<td align="left">Hunt</td>
+<td align="left">Millicent</td>
+<td align="left">Purview</td>
+</tr>
+<tr class="even">
+<td align="left">David</td>
+<td align="left">Jones</td>
+<td align="left">Janice</td>
+<td align="left">Joplette</td>
+</tr>
+<tr class="odd">
+<td align="left">Douglas</td>
+<td align="left">Jones</td>
+<td align="left">David</td>
+<td align="left">Jones</td>
+</tr>
+<tr class="even">
+<td align="left">Janice</td>
+<td align="left">Joplette</td>
+<td align="left">Darren</td>
+<td align="left">Smith</td>
+</tr>
+<tr class="odd">
+<td align="left">Anna</td>
+<td align="left">Mackenzie</td>
+<td align="left">Darren</td>
+<td align="left">Smith</td>
+</tr>
+<tr class="even">
+<td align="left">Charles</td>
+<td align="left">Owen</td>
+<td align="left">Darren</td>
+<td align="left">Smith</td>
+</tr>
+<tr class="odd">
+<td align="left">David</td>
+<td align="left">Pinker</td>
+<td align="left">Jemima</td>
+<td align="left">Farrell</td>
+</tr>
+<tr class="even">
+<td align="left">Millicent</td>
+<td align="left">Purview</td>
+<td align="left">Tracy</td>
+<td align="left">Smith</td>
+</tr>
+<tr class="odd">
+<td align="left">Tim</td>
+<td align="left">Rownam</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+</tr>
+<tr class="even">
+<td align="left">Henrietta</td>
+<td align="left">Rumney</td>
+<td align="left">Matthew</td>
+<td align="left">Genting</td>
+</tr>
+<tr class="odd">
+<td align="left">Ramnaresh</td>
+<td align="left">Sarwin</td>
+<td align="left">Florence</td>
+<td align="left">Bader</td>
+</tr>
+<tr class="even">
+<td align="left">Darren</td>
+<td align="left">Smith</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+</tr>
+<tr class="odd">
+<td align="left">Darren</td>
+<td align="left">Smith</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+</tr>
+<tr class="even">
+<td align="left">Jack</td>
+<td align="left">Smith</td>
+<td align="left">Darren</td>
+<td align="left">Smith</td>
+</tr>
+<tr class="odd">
+<td align="left">Tracy</td>
+<td align="left">Smith</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+</tr>
+<tr class="even">
+<td align="left">Ponder</td>
+<td align="left">Stibbons</td>
+<td align="left">Burton</td>
+<td align="left">Tracy</td>
+</tr>
+<tr class="odd">
+<td align="left">Burton</td>
+<td align="left">Tracy</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+</tr>
+<tr class="even">
+<td align="left">Hyacinth</td>
+<td align="left">Tupperware</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+</tr>
+<tr class="odd">
+<td align="left">Henry</td>
+<td align="left">Worthington-Smyth</td>
+<td align="left">Tracy</td>
+<td align="left">Smith</td>
+</tr>
+</tbody>
+</table>
+</div>
 </div>
 
 

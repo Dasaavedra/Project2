@@ -1,4 +1,4 @@
-name: "Portfolio R"
+name: "SQL"
 author: "Armando Saavedra"  
 output_dir: "docs"  
 output:  
@@ -6,5 +6,5 @@ output:
     self_contained: no  
     theme: flatly  
 navbar:  
-  title: "Portfolio R" 
+  title: "SQL" 
   

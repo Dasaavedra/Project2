@@ -1,5 +1,5 @@
 ---
-title: "Breast Cancer Predictive Model"
+title: "SQL Server Exercises "
 author: "Armando Saavedra"
 date: "3/22/2020"
 output:
@@ -59,150 +59,169 @@ p{
 
 
 
-
-# Introduction
-
-The goal of this project is to analyze spatial data summarizing the number of acidents in New york. The objective is to create a heat map where every zip code shows the number of car accidents.
-
-The information base of this analysis comes from a dataset found in Kaggle that provides differents 
-
-
-
 ```{r,include = FALSE,message=FALSE, warning=FALSE,paged.print=TRUE}
 library(readxl)
 
 library(data.table)
 library(ggplot2)
 library(ggthemes)
-
-```
-# Data
-
-```{r,message = FALSE,warning = FALSE,comment=NA}
-data<-read.csv("C:/Users/dsaav/Documents/Projects/Datasets/Breast Cancer Prediction/data.csv",
-               header = TRUE)
-print(sum(is.na(data$ZI)))
-
-```
-
-
-```{r,message = FALSE,warning = FALSE,comment=NA}
-for (i in 1:ncol(data)){
- print(paste(colnames(data)[i],"=", sum(is.na(data[,i]))))
-  }
-
-```
-
-```{r,message = FALSE,warning = FALSE,comment=NA}
-head(data)
-
-```
-
-
-
-# Main Statistics
-```{r,message = FALSE,warning = FALSE,comment=NA}
-summary(data)
-
-```
-```{r,message = FALSE,warning = FALSE}
-dim(data)
-
-```
-```{r,message = FALSE,warning = FALSE}
-str(data)
-
-```
-
-
-
-
-
-
-```{r,message = FALSE,warning = FALSE,comment=NA}
-data$diagnosis<-factor(data$diagnosis)
-
-```
-
-
-
-
-# Data Visualization
-
-```{r,message = FALSE,warning = FALSE,comment=NA}
-library(gridExtra)
-library(stringr)
-library(ggplot2)
-
-
-# Assign the columns of interest to a variable
-#target_variables <- colnames(data)[2:7]
-
-
-
-mulplot<-function(df,vars){
-  my_plots_list <-lapply(vars, function(each_variable) {
-    ggplot(df, aes_string(each_variable,fill=data$diagnosis)) + # NOTE - aes_string rather than aes
-      geom_density(alpha = 0.5,linetype = 1) +ggtitle(str_c(each_variable))+
-      theme(text=element_text(size = 9),legend.key.size = unit(0.5, 'cm'))+
-      labs(x = " Values", y = "Density",fill='RGIT')
-    })
-  gridExtra::grid.arrange(grobs = my_plots_list, ncol = 2,widths=c(10,10))
-  }
-```
-
-
-```{r,message = FALSE,warning = FALSE,echo=FALSE}
-
-mulplot(data,colnames(data)[2:7])
-mulplot(data,colnames(data)[8:13])
-mulplot(data,colnames(data)[14:19])
-mulplot(data,colnames(data)[20:25])
-mulplot(data,colnames(data)[26:31])
-
-
-```
-
-
-# Training and Testing Data
-
-```{r,message = FALSE,warning = FALSE, comment=NA}
-
-train_test<-function(df){
-  set.seed(1)
-  
-  sample <- sample(c(TRUE, FALSE), nrow(df), replace=TRUE, prob=c(0.7,0.3))
-  train  <- df[sample, ]
-  test   <- df[!sample, ]
-  results <- list(train,test)
-  return(results)
-}
-
-results=train_test(data)
-train<-results[[1]]
-test<-results[[2]]
-
-```
-
-
-# Logistic Regression Model
-
-```{r,message = FALSE,warning = FALSE,comment=NA}
-
-
-
-library(ggplot2)
+library(table1)
 library(dplyr)
+library(dbplyr)
 
-logistic<-glm(formula=diagnosis ~ ., data=train,family="binomial")
+library(knitr)
 
+
+library(DBI)
+library(odbc)
+library(RODBC)
+#setwd("C:/Users/dsaav/Documents/Projects/R/Portfolio/Project 5")
+```
+
+
+# Introduction
+
+The purpose of this project is to provide an example where data from SQL Server is linked to RStudio environment. There are situation where R users does not feel confortable working with SQL. To facilitated this problem R has different solutions to amelianate this inconvenience. On of this is to stablish a connection to SQL data provider, in this case SQL Server, and access the different tables included in the schema of the database. 
+
+
+
+
+# Data Source
+The data used for the porpose of this project comes from a blog located in github called [PostgreSQL Exercises](https://ozencb.github.io/postgresql-exercises/). The same way, some of the exercises exposed here comes from the same source. 
+
+
+# Connection
+```{r,message = FALSE,warning = FALSE,comment=NA}
+
+
+# Establish connection to SQL Server
+con <- dbConnect(odbc::odbc(),
+                 Driver = "SQL Server",          # Or "ODBC Driver 17 for SQL Server"
+                 Server = "Armando\\SQLEXPRESS",    # Replace with your server name
+                 Database = "Booking",            # Replace with your database name
+                 Trusted_connection="True"
+)
+
+```
+
+
+# Data extraction
+
+```{r,message = FALSE,warning = FALSE,comment=NA}
+bookings<-tbl(con,in_schema("cd","Bookings"))%>%
+  collect()
+
+members<-tbl(con,in_schema("cd","members"))%>%
+  collect()
+
+facilities<-tbl(con,in_schema("cd","facilities"))%>%
+  collect()
 
 ```
 
 
 
-```{r,message = FALSE,warning = FALSE,comment=NA}
+# Exercises 
 
-summary(logistic)
+### Where Statement
+Produce a list of facilities that charge a fee to members and that fee is less thatn 150 of the monthly maintance cost.
+
+```{sql,connection=con, output.var="charge_data"}
+SELECT name, membercost, monthlymaintenance 
+FROM cd.facilities
+WHERE membercost>0 AND
+      (membercost<monthlymaintenance/50)
+
+```
+
+```{r, echo=FALSE}
+kable(head(charge_data))
+
+```
+
+
+### Case when Statement
+Create a new field that list facilities as cheap and expensive. To do that use $100 as criteria.
+
+
+```{sql,connection=con, output.var="case_data" }
+SELECT name, 
+	     CASE WHEN (monthlymaintenance > 100) THEN 'expensive'
+	     ELSE 'cheap'
+	     END AS cost
+FROM cd.facilities;    
+
+```
+
+
+```{r, echo=FALSE}
+kable(case_data)
+
+```
+### Filter Dates
+Identify the name and last name fo the members who joined after June 2012.
+
+```{sql,connection=con,output.var="date_data"}
+select surname, firstname, joindate 
+from cd.members
+where joindate>='2012-06-01' 
+```
+
+
+```{r, echo=FALSE}
+kable(head(date_data))
+
+```
+
+### Subquery
+Get the first and last name of the last member who signed up.
+```{sql,connection=con,output.var="max_data"}
+SELECT firstname, surname, joindate
+FROM cd.members
+WHERE joindate = (SELECT max(joindate) 
+			            FROM cd.members);  
+		 
+```
+
+
+```{r, echo=FALSE}
+kable(max_data)
+
+```
+
+### Inner Join
+* Get the list of the first six records of the start times for bookings for the member named David
+
+```{sql,connection=con,output.var="join_data"}
+SELECT B.firstname,B.surname,A.starttime 
+FROM cd.bookings AS A
+INNER JOIN cd.members AS B
+ ON B.memid = A.memid
+WHERE B.firstname = 'David' AND 
+      B.surname='Farrell'
+
+```
+
+
+```{r, echo=FALSE}
+kable(head(join_data))
+
+```
+
+### Left Join
+List all members and includes those who recommended them. Order by surname and firstname
+
+```{sql,connection=con,output.var="outer_data"}
+SELECT A.firstname as memfname, A.surname as memsname, B.firstname as recfname,                       B.surname as recsname
+FROM cd.members AS A
+LEFT OUTER JOIN cd.members AS B
+ ON B.memid = A.recommendedby
+ORDER BY memsname, memfname;  
+
+```
+
+
+```{r, echo=FALSE}
+kable(outer_data)
 
 ```
